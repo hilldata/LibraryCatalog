@@ -2,8 +2,84 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:XRD.LibCat"
+             xmlns:goog="clr-namespace:XRD.LibCat.GoogleBooksApi"
+             xmlns:conv="clr-namespace:XRD.LibCat.Converters"
+             xmlns:mod="clr-namespace:XRD.LibCat.Models"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style TargetType="ToolBar">
+            <Setter Property="ToolBarTray.IsLocked" Value="True"/>
+            <Setter Property="DockPanel.Dock" Value="Top"/>
+        </Style>
+        
+        <Style TargetType="Label">
+            <Setter Property="Margin" Value="1,1,6,1"/>
+        </Style>
+        <Style TargetType="Label" x:Key="RequiredField">
+            <Setter Property="Margin" Value="1,1,6,1"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <Style TargetType="GroupBox">
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="Background" Value="Ivory"/>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="Mdl2Icon">
+            <Setter Property="FontFamily" Value="Segoe Mdl2 Assets"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="2,0,2,0"/>
+        </Style>
+
+        <Style TargetType="TextBox" x:Key="txtBoxBase">
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Grid.Column" Value="1"/>
+            <Setter Property="SpellCheck.IsEnabled" Value="True"/>
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource txtBoxBase}"/>
+
+        <Style TargetType="ComboBox" x:Key="cmbBase">
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Grid.Column" Value="1"/>
+        </Style>
+        <Style TargetType="ComboBox" BasedOn="{StaticResource cmbBase}"/>
+
+        <DataTemplate DataType="{x:Type goog:VolumeInfo}" x:Key="googVolInfoTemplate">
+            <Grid DataContext="{Binding VolumeInfo}">
+                <Grid.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="BorderBrush" Value="Navy"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="Grid.ColumnSpan" Value="2"/>
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Border/>
+                <Label Grid.Row="1" Content="Title:"/>
+                <TextBlock Grid.Row="1" Text="{Binding Title}" FontSize="14"/>
+                <TextBlock Grid.Row=" 2" Text="{Binding Subtitle}" Visibility="{Binding Subtitle, Converter={conv:StringToVisibilityConverter}}"/>
+
+                <Label Grid.Row="3" Content="Author(s):"/>
+                <TextBlock Grid.Row="3" Text="{Binding AuthorDisplay}"/>
+
+                <Label Grid.Row="4" Content="Identifier(s):"/>
+                <TextBlock Grid.Row="4" Text="{Binding IsbnDisplay}"/>
+
+                <Border Grid.Row="5"/>
+            </Grid>
+        </DataTemplate>
     </Application.Resources>
 </Application>

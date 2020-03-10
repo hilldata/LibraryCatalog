@@ -1,0 +1,109 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:XRD.LibCat.Converters"
+    xmlns:ctrl="clr-namespace:XRD.LibCat.Controls"
+    xmlns:local="clr-namespace:XRD.LibCat">
+
+    <Style TargetType="{x:Type ctrl:EntityBoundWindow}">
+        <Style.Resources>
+            <Style TargetType="TextBlock" x:Key="mdl2">
+                <Setter Property="FontFamily" Value="Segoe Mdl2 Assets"/>
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="Padding" Value="2,0,2,0"/>
+            </Style>
+        </Style.Resources>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ctrl:EntityBoundWindow}">
+                    <DockPanel Background="{x:Static SystemColors.WindowBrush}">
+                        <ToolBar>
+                            <Button x:Name="PART_btnSave" ToolTip="Save any changes.">
+                                <TextBlock Style="{StaticResource mdl2}" Text="&#xe74e;"/>
+                            </Button>
+                            <Button Name="PART_btnSaveNew" ToolTip="Save any changes and create a new record.">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource mdl2}" Text="&#xe74e;"/>
+                                    <TextBlock Style="{StaticResource mdl2}" Text="&#xe710;" Foreground="Green" Margin="12,0,0,0"/>
+                                    <TextBlock Grid.Column="1" Text="Save &amp; New"/>
+                                </Grid>
+                            </Button>
+                            <Button x:Name="PART_btnSaveClose" ToolTip="Save any changes and close the window.">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource mdl2}" Text="&#xe74e;"/>
+                                    <TextBlock Style="{StaticResource mdl2}" Text="&#xea83;" Margin="9,0,0,0"/>
+                                    <TextBlock Grid.Column="1" Text="Save &amp; Close"/>
+                                </Grid>
+                            </Button>
+                            <Separator/>
+                            <Button x:Name="PART_btnCancel" ToolTip="Discard any changes and close the window.">
+                                <TextBlock Style="{StaticResource mdl2}" Text="&#xe711;"/>
+                            </Button>
+                        </ToolBar>
+                        <StatusBar DockPanel.Dock="Bottom">
+                            <StatusBar.Resources>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                    <Setter Property="Margin" Value="3,0,6,0"/>
+                                </Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Orientation" Value="Horizontal"/>
+                                </Style>
+                            </StatusBar.Resources>
+                            <StatusBarItem ToolTip="The record's ID (local primary key)">
+                                <StackPanel>
+                                    <TextBlock Text="ID:"/>
+                                    <TextBox Text="{Binding Id, Mode=OneWay}"/>
+                                </StackPanel>
+                            </StatusBarItem>
+                            <StatusBarItem ToolTip="The date/time the record was created.">
+                                <StackPanel >
+                                    <TextBlock Text="Created:"/>
+                                    <TextBox Text="{Binding CTime, Mode=OneWay}"/>
+                                </StackPanel>
+                            </StatusBarItem>
+                            <StatusBarItem ToolTip="The record's unique ID across domains (globally unique ID)">
+                                <StackPanel>
+                                    <TextBlock Text="UID:"/>
+                                    <TextBox Text="{Binding UID, Mode=OneWay}" IsReadOnly="True" IsEnabled="True"/>
+                                </StackPanel>
+                            </StatusBarItem>
+                            <StatusBarItem Name="PART_sbTs" ToolTip="The date/time the record was last saved.">
+                                <StackPanel>
+                                    <TextBlock Text="Saved:"/>
+                                    <TextBox Text="{Binding LastSave, Mode=OneWay}"/>
+                                </StackPanel>
+                            </StatusBarItem>
+                            <StatusBarItem x:Name="PART_sbEc" ToolTip="The total number of times the record has been edited.">
+                                <StackPanel>
+                                    <TextBlock Text="# Edits:"/>
+                                    <TextBox Text="{Binding Ec, Mode=OneWay}"/>
+                                </StackPanel>
+                            </StatusBarItem>
+                            <StatusBarItem>
+                                <ProgressBar Name="PART_prgBar" IsIndeterminate="True" Visibility="Collapsed"/>
+                            </StatusBarItem>
+                            <StatusBarItem x:Name="PART_sbIsDeleted" HorizontalAlignment="Right">
+                                <ToggleButton x:Name="tglIsDeleted" IsChecked="{Binding IsDeleted}" ToolTip="{Binding IsDeleted, Converter={conv:IsDeletedToolTipConverter}}">
+                                    <Grid>
+                                        <TextBlock Style="{StaticResource mld2}" Text="&#xe74d;" Foreground="{Binding IsDeleted, Converter={conv:IsDeletedToButtonForegroundConverter} , ConverterParameter={x:Static Brushes.Green}}"/>
+                                        <TextBlock Style="{StaticResource mdl2}" Text="&#xf140;" Visibility="{Binding IsDeleted, Converter={conv:BoolToVisibilityConverter}}"/>
+                                    </Grid>
+                                </ToggleButton>
+                            </StatusBarItem>
+                        </StatusBar>
+                        <ContentPresenter x:Name="PART_content"/>
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
