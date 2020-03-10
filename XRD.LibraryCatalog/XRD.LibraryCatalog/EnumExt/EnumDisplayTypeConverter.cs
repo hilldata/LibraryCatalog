@@ -17,9 +17,6 @@ namespace XRD.LibCat {
 				if (value != null) {
 					FieldInfo fi = value.GetType().GetField(value.ToString());
 					if (fi != null) {
-						var edAtt = fi.GetCustomAttribute<EnumDescAttribute>(false);
-						if (edAtt != null)
-							return edAtt.Display;
 						var descAtt = fi.GetCustomAttribute<DescriptionAttribute>(false);
 						if (descAtt != null)
 							return descAtt.Description;

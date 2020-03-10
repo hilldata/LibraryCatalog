@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace XRD.LibraryCatalog {
+namespace XRD.LibCat {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
