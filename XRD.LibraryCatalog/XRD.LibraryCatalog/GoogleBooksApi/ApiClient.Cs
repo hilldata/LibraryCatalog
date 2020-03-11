@@ -60,7 +60,7 @@ namespace XRD.LibCat.GoogleBooksApi {
 		public override bool CanSearch => !string.IsNullOrWhiteSpace(Criteria);
 		#endregion
 
-		public VolumeInfo ExactIdMatch {
+		public List<VolumeInfo> ExactIdMatch {
 			get {
 				// If the current List contains no items, stop.
 				if (Items.IsNullOrEmpty())
@@ -73,7 +73,7 @@ namespace XRD.LibCat.GoogleBooksApi {
 							(vi => vi.IndustryIdentifiers
 								.Where(i => i.Identifier.Trim().ToLower().Equals(Criteria.Trim().ToLower())
 							).Any())
-						).FirstOrDefault();
+						).ToList();
 				}
 				return null;
 			}

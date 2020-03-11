@@ -130,7 +130,7 @@ namespace XRD.LibCat.Controls {
 			}
 		}
 
-		private bool _isFillingCombo = false;
+		private bool _isFillingCombo;
 		private int _curPagCount = 0;
 		private void Target_Navigated(object sender, EventArgs e) {
 			var cmb = (ComboBox)Template.FindName("PART_cmbJump", this);

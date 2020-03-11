@@ -23,5 +23,17 @@ namespace XRD.LibCat.Controls {
 			InitializeComponent();
 		}
 
+		public ApiClient apiClient => (ApiClient)Resources["apiClient"];
+
+		private void tglExactMatch_Checked(object sender, RoutedEventArgs e) {
+			if (apiClient == null || apiClient.ExactIdMatch == null)
+				return;
+
+			if (tglExactMatch.IsChecked ?? false)
+				lvw.ItemsSource = apiClient.ExactIdMatch;
+			else
+				lvw.ItemsSource = apiClient.Items;
+
+		}
 	}
 }

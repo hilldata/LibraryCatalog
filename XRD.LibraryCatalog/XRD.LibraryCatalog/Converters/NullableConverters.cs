@@ -9,6 +9,9 @@ namespace XRD.LibCat.Converters {
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
 			if (value == null)
 				return Visibility.Collapsed;
+			if (value is System.Collections.IList coll)
+				return (coll.Count < 1) ? Visibility.Collapsed : Visibility.Visible;
+
 			return Visibility.Visible;
 		}
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => null;
@@ -19,6 +22,9 @@ namespace XRD.LibCat.Converters {
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
 			if (value == null)
 				return false;
+			if (value is System.Collections.IList coll)
+				return coll.Count > 0;
+
 			return true;
 		}
 

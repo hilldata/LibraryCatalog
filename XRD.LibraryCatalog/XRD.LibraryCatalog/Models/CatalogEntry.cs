@@ -203,5 +203,54 @@ namespace XRD.LibCat.Models {
 				return sb.ToString();
 			}
 		}
+
+		public Author AddAuthor(string name, string role = null) {
+			if (string.IsNullOrWhiteSpace(name))
+				return null;
+
+			PersonName pn = new PersonName(name);
+			name = pn.ToFullName(includeMiddle: true);
+
+			var res = Authors.Where(a => a.FullName.ToLower().Equals(name.ToLower())).FirstOrDefault();
+			if(res == null) {
+				res = new Author(this, name, Authors.Count, role);
+				Authors.Add(res);
+			}
+			return res;
+		}
+
+		public Genre AddGenre(string genre) {
+			if (string.IsNullOrWhiteSpace(genre))
+				return null;
+
+			var res = Genres.Where(g => g.Value.ToLower().Equals(genre.Trim().ToLower())).FirstOrDefault();
+			if(res == null) { 
+				res = new Genre(this, genre.Trim());
+				Genres.Add(res);
+			}
+			return res;
+		}
+
+		public Identifier AddIdentifier(string identifier) {
+			if (string.IsNullOrWhiteSpace(identifier))
+				return null;
+
+			identifier = identifier.Trim().ToUpper();
+			var res = Identifiers.Where(i => i.Value.Equals(identifier)).FirstOrDefault();
+			if (res == null) {
+				res = new Identifier(this, identifier);
+				Identifiers.Add(res);
+			}
+			return res;
+		}
+
+		public OwnedBook AddOwnedBook(int bookNum) {
+			OwnedBook res = OwnedBooks.Where(b => b.BookNumber == bookNum).FirstOrDefault();
+			if(res == null) {
+				res = new OwnedBook(bookNum, this);
+				OwnedBooks.Add(res);
+			}
+			return res;
+		}
 	}
 }

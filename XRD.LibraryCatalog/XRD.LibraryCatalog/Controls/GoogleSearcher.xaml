@@ -51,7 +51,7 @@
             <Label Content="Google Books API Results" DockPanel.Dock="Top" Style="{StaticResource SectionHeader}"/>
             <ToolBarTray DockPanel.Dock="Top">
                 <ToolBar>
-                    <ToggleButton x:Name="tglExactMatch" ToolTip="Filter for an exact match to the ISBN searched for." IsEnabled="{Binding ExactIdMatch, Converter={conv:NullableToEnabledConverter}}">
+                    <ToggleButton x:Name="tglExactMatch" ToolTip="Filter for an exact match to the ISBN searched for." IsEnabled="{Binding ExactIdMatch, Converter={conv:NullableToEnabledConverter}}" Checked="tglExactMatch_Checked" Unchecked="tglExactMatch_Checked">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Style="{StaticResource Mdl2Icon}" Text="&#xe71c;"/>
                             <TextBlock Text="Exact Match"/>
@@ -61,7 +61,7 @@
                 </ToolBar>
                 <local:NavigationToolbar Target="{DynamicResource apiClient}"/>
             </ToolBarTray>
-            <ListView></ListView>
+            <ListView x:Name="lvw" ItemTemplate="{StaticResource googVolInfoTemplate}" ItemsSource="{Binding Items}"/>
         </DockPanel>
     </Border>
 </UserControl>
