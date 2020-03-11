@@ -19,6 +19,20 @@
             <Setter Property="Margin" Value="1,1,6,1"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
+        <Style TargetType="Label" x:Key="SectionHeader">
+            <Setter Property="Background" Value="{x:Static SystemColors.InactiveCaptionBrush}"/>
+            <Setter Property="Foreground" Value="{x:Static SystemColors.InactiveCaptionTextBrush}"/>
+            <Setter Property="BorderBrush" Value="{x:Static SystemColors.InactiveBorderBrush}"/>
+            <Setter Property="FontSize" Value="{x:Static SystemFonts.CaptionFontSize}"/>
+            <Setter Property="FontFamily" Value="{x:Static SystemFonts.CaptionFontFamily}"/>
+            <Setter Property="FontWeight" Value="{x:Static SystemFonts.CaptionFontWeight}"/>
+        </Style>
+
+        <Style TargetType="Border" x:Key="SectionBorder">
+            <Setter Property="BorderBrush" Value="{x:Static SystemColors.InactiveBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="{x:Static SystemColors.ControlBrush}"/>
+        </Style>
 
         <Style TargetType="GroupBox">
             <Setter Property="Padding" Value="3"/>
@@ -28,7 +42,7 @@
         <Style TargetType="TextBlock" x:Key="Mdl2Icon">
             <Setter Property="FontFamily" Value="Segoe Mdl2 Assets"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Padding" Value="2,0,2,0"/>
+            <Setter Property="Padding" Value="0"/>
         </Style>
 
         <Style TargetType="TextBox" x:Key="txtBoxBase">
@@ -46,40 +60,5 @@
         </Style>
         <Style TargetType="ComboBox" BasedOn="{StaticResource cmbBase}"/>
 
-        <DataTemplate DataType="{x:Type goog:VolumeInfo}" x:Key="googVolInfoTemplate">
-            <Grid DataContext="{Binding VolumeInfo}">
-                <Grid.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="BorderBrush" Value="Navy"/>
-                        <Setter Property="BorderThickness" Value="1"/>
-                        <Setter Property="Grid.ColumnSpan" Value="2"/>
-                    </Style>
-                </Grid.Resources>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <Border/>
-                <Label Grid.Row="1" Content="Title:"/>
-                <TextBlock Grid.Row="1" Text="{Binding Title}" FontSize="14"/>
-                <TextBlock Grid.Row=" 2" Text="{Binding Subtitle}" Visibility="{Binding Subtitle, Converter={conv:StringToVisibilityConverter}}"/>
-
-                <Label Grid.Row="3" Content="Author(s):"/>
-                <TextBlock Grid.Row="3" Text="{Binding AuthorDisplay}"/>
-
-                <Label Grid.Row="4" Content="Identifier(s):"/>
-                <TextBlock Grid.Row="4" Text="{Binding IsbnDisplay}"/>
-
-                <Border Grid.Row="5"/>
-            </Grid>
-        </DataTemplate>
     </Application.Resources>
 </Application>

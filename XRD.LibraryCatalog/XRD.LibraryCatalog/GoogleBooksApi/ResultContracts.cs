@@ -204,6 +204,34 @@ namespace XRD.LibCat.GoogleBooksApi {
 		/// </summary>
 		[DataMember(Name = "thumbnail")]
 		public string Thumbnail { get; set; }
+
+		private const string GOOGLE_IMAGE_CURL_PARM = "&edge=";
+
+		public string ImageUrl {
+			get {
+				string url = string.Empty;
+				if (string.IsNullOrWhiteSpace(Thumbnail)) {
+					if (string.IsNullOrWhiteSpace(SmallThumbnail))
+						return null;
+					else
+						url = SmallThumbnail;
+				} else {
+					url = Thumbnail;
+				}
+				if (string.IsNullOrWhiteSpace(url))
+					return null;
+
+				if (url.Contains(GOOGLE_IMAGE_CURL_PARM)) {
+					int i1 = url.IndexOf(GOOGLE_IMAGE_CURL_PARM);
+					int i2 = url.IndexOf("&", i1 + 1);
+					if (i2 < i1) // no further ampersands were found after the curl.
+						return url.Substring(0, 1);
+					else
+						return url.Remove(i1, i2 - i1);
+				} else
+					return url;
+			}
+		}
 	}
 
 	/// <summary>

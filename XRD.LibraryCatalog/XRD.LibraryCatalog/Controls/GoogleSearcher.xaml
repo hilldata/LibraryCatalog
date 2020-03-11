@@ -1,0 +1,67 @@
+﻿<UserControl x:Class="XRD.LibCat.Controls.GoogleSearcher"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:goog="clr-namespace:XRD.LibCat.GoogleBooksApi"
+             xmlns:local="clr-namespace:XRD.LibCat.Controls"
+             xmlns:conv="clr-namespace:XRD.LibCat.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <goog:ApiClient x:Key="apiClient"/>
+        <DataTemplate DataType="{x:Type goog:VolumeInfo}" x:Key="googVolInfoTemplate">
+            <Grid DataContext="{Binding}">
+                <Grid.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="BorderBrush" Value="Navy"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="Grid.ColumnSpan" Value="2"/>
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Border/>
+                <Label Grid.Row="1" Content="Title:"/>
+                <TextBlock Grid.Row="1" Text="{Binding Title}" FontSize="14"/>
+                <TextBlock Grid.Row=" 2" Text="{Binding Subtitle}" Visibility="{Binding Subtitle, Converter={conv:StringToVisibilityConverter}}"/>
+
+                <Label Grid.Row="3" Content="Author(s):"/>
+                <TextBlock Grid.Row="3" Text="{Binding AuthorDisplay}"/>
+
+                <Label Grid.Row="4" Content="Identifier(s):"/>
+                <TextBlock Grid.Row="4" Text="{Binding IsbnDisplay}"/>
+
+                <Border Grid.Row="5"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Border Style="{StaticResource SectionBorder}">
+        <DockPanel DataContext="{DynamicResource apiClient}">
+            <Label Content="Google Books API Results" DockPanel.Dock="Top" Style="{StaticResource SectionHeader}"/>
+            <ToolBarTray DockPanel.Dock="Top">
+                <ToolBar>
+                    <ToggleButton x:Name="tglExactMatch" ToolTip="Filter for an exact match to the ISBN searched for." IsEnabled="{Binding ExactIdMatch, Converter={conv:NullableToEnabledConverter}}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource Mdl2Icon}" Text="&#xe71c;"/>
+                            <TextBlock Text="Exact Match"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    <Separator/>
+                </ToolBar>
+                <local:NavigationToolbar Target="{DynamicResource apiClient}"/>
+            </ToolBarTray>
+            <ListView></ListView>
+        </DockPanel>
+    </Border>
+</UserControl>
