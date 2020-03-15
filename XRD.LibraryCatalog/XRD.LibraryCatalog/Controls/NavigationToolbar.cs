@@ -42,11 +42,11 @@ namespace XRD.LibCat.Controls {
 	///     <MyNamespace:NavigationToolbar/>
 	///
 	/// </summary>
-	[TemplatePart(Name ="PART_btnMoveFirst", Type =typeof(Button))]
+	[TemplatePart(Name = "PART_btnMoveFirst", Type = typeof(Button))]
 	[TemplatePart(Name = "PART_btnMovePrev", Type = typeof(Button))]
 	[TemplatePart(Name = "PART_btnMoveNext", Type = typeof(Button))]
 	[TemplatePart(Name = "PART_btnMoveLast", Type = typeof(Button))]
-	[TemplatePart(Name ="PART_cmbJump", Type =typeof(ComboBox))]
+	[TemplatePart(Name = "PART_cmbJump", Type = typeof(ComboBox))]
 	public class NavigationToolbar : ToolBar {
 		static NavigationToolbar() {
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(NavigationToolbar), new FrameworkPropertyMetadata(typeof(NavigationToolbar)));
@@ -58,23 +58,23 @@ namespace XRD.LibCat.Controls {
 
 		private void NavigationToolbar_Loaded(object sender, RoutedEventArgs e) {
 			var btnFirst = (Button)Template.FindName("PART_btnMoveFirst", this);
-			if(btnFirst != null)
+			if (btnFirst != null)
 				btnFirst.Click += BtnFirst_Click;
 
 			var btnPrev = (Button)Template.FindName("PART_btnMovePrev", this);
-			if(btnPrev != null)
+			if (btnPrev != null)
 				btnPrev.Click += BtnPrev_Click;
 
 			var btnNext = (Button)Template.FindName("PART_btnMoveNext", this);
-			if(btnNext != null)
+			if (btnNext != null)
 				btnNext.Click += BtnNext_Click;
 
 			var btnLast = (Button)Template.FindName("PART_btnMoveLast", this);
-			if(btnLast != null)
+			if (btnLast != null)
 				btnLast.Click += BtnLast_Click;
 
-			var cmbJump = (ComboBox)Template.FindName("PART_btnJump", this);
-			if(cmbJump != null)
+			var cmbJump = (ComboBox)Template.FindName("PART_cmbJump", this);
+			if (cmbJump != null)
 				cmbJump.SelectionChanged += CmbJump_SelectionChanged;
 
 			Target.Navigated += Target_Navigated;
@@ -84,8 +84,8 @@ namespace XRD.LibCat.Controls {
 			if (_isFillingCombo)
 				return;
 
-			if(Target != null && Target.CanSearch) {
-				if(sender is ComboBox cmb) {
+			if (Target != null && Target.CanSearch) {
+				if (sender is ComboBox cmb) {
 					await Target.JumpToPage(cmb.SelectedIndex + 1);
 				}
 			}
@@ -131,17 +131,17 @@ namespace XRD.LibCat.Controls {
 		}
 
 		private bool _isFillingCombo;
-		private int _curPagCount = 0;
+		private int _curPagCount = -1;
 		private void Target_Navigated(object sender, EventArgs e) {
 			var cmb = (ComboBox)Template.FindName("PART_cmbJump", this);
-			if(cmb != null) {
-				if (_curPagCount == Target.TotalPages)
-					return;
-				
+			if (cmb != null ) {
 				_isFillingCombo = true;
-				cmb.Items.Clear();
-				for(int i = 1; i <= Target.TotalPages; i++) {
-					cmb.Items.Add(i);
+				if (_curPagCount != Target.TotalPages) {
+					cmb.Items.Clear();
+					_curPagCount = Target.TotalPages;
+					for (int i = 1; i <= Target.TotalPages; i++) {
+						cmb.Items.Add(i);
+					}
 				}
 				try {
 					cmb.SelectedItem = Target.PageIndex;

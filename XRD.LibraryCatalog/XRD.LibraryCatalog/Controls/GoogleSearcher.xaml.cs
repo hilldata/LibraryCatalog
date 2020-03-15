@@ -23,17 +23,56 @@ namespace XRD.LibCat.Controls {
 			InitializeComponent();
 		}
 
-		public ApiClient apiClient => (ApiClient)Resources["apiClient"];
+		public void ClearSearch() {
+			Client.Clear();
+		}
+
+		public static readonly DependencyProperty IsHeaderVisibleProperty = DependencyProperty.Register(
+			"IsHeaderVisible",
+			typeof(bool),
+			typeof(GoogleSearcher),
+			new FrameworkPropertyMetadata(true, IsHeaderVisibilityChanged));
+		public bool IsHeaderVisible {
+			get => (bool)GetValue(IsHeaderVisibleProperty);
+			set => SetValue(IsHeaderVisibleProperty, value);
+		}
+		private static void IsHeaderVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+			if(d is GoogleSearcher me) {
+				if (!(bool)e.NewValue)
+					me.lblHeader.Visibility = Visibility.Collapsed;
+				else
+					me.lblHeader.Visibility = Visibility.Visible;
+			}
+		}
+
+		public async Task Search(SearchFields field, string criteria, int pageSize = 10) =>
+			await Client.SearchAsync(field, criteria, pageSize);
+
+		public ApiClient Client => (ApiClient)Resources["apiClient"];
 
 		private void tglExactMatch_Checked(object sender, RoutedEventArgs e) {
-			if (apiClient == null || apiClient.ExactIdMatch == null)
+			if (Client == null || _navigating)
 				return;
 
 			if (tglExactMatch.IsChecked ?? false)
-				lvw.ItemsSource = apiClient.ExactIdMatch;
+				lvw.ItemsSource = Client.ExactIdMatch;
 			else
-				lvw.ItemsSource = apiClient.Items;
+				lvw.ItemsSource = Client.Items;
+		}
 
+		private bool _navigating = false;
+		private void ApiClient_Navigated(object sender, EventArgs e) {
+			if(sender is ApiClient client) {
+				_navigating = true;
+				if (!client.ExactIdMatch.IsNullOrEmpty()) {
+					tglExactMatch.IsChecked = true;
+					lvw.ItemsSource = client.ExactIdMatch;
+				} else {
+					tglExactMatch.IsChecked = false;
+					lvw.ItemsSource = client.Items;
+				}
+				_navigating = false;
+			}
 		}
 	}
 }

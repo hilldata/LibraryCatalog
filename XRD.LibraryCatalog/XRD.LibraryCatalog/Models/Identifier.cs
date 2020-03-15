@@ -12,12 +12,12 @@ namespace XRD.LibCat.Models {
 		public Identifier() : base() { }
 		public Identifier(int catId, string identifier) : base(true) {
 			CatId = catId;
-			Value = identifier.HasValue() ? identifier.Truncate(50) : throw new ArgumentNullException(nameof(identifier));
+			Value = identifier.HasValue() ? FixValue(identifier) : throw new ArgumentNullException(nameof(identifier));
 		}
 
 		public Identifier(CatalogEntry book, string identifier) : base(true) {
 			Book = book;
-			Value = identifier.HasValue() ? identifier.Truncate(50) : throw new ArgumentNullException(nameof(identifier));
+			Value = identifier.HasValue() ? FixValue(identifier) : throw new ArgumentNullException(nameof(identifier));
 		}
 		#region Fields
 		public int CatId { get; private set; }
@@ -40,6 +40,12 @@ namespace XRD.LibCat.Models {
 					i.Value
 				}).IsUnique();
 			}
+		}
+
+		internal static string FixValue(string s) {
+			if (string.IsNullOrWhiteSpace(s))
+				return null;
+			return s.Truncate(50).ToUpper();
 		}
 	}
 }

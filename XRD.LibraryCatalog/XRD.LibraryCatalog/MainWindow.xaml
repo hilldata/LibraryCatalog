@@ -7,6 +7,6 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <Button x:Name="btnReceiveInventory" Content="Receive Books into Inventory" Click="btnReceiveInventory_Click"/>
     </Grid>
 </Window>

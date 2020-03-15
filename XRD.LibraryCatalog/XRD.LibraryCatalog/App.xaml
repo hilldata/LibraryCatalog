@@ -20,23 +20,24 @@
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
         <Style TargetType="Label" x:Key="SectionHeader">
-            <Setter Property="Background" Value="{x:Static SystemColors.InactiveCaptionBrush}"/>
-            <Setter Property="Foreground" Value="{x:Static SystemColors.InactiveCaptionTextBrush}"/>
-            <Setter Property="BorderBrush" Value="{x:Static SystemColors.InactiveBorderBrush}"/>
+            <Setter Property="Background" Value="LightBlue"/>
+            <Setter Property="Foreground" Value="Navy"/>
+            <Setter Property="BorderBrush" Value="Navy"/>
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize" Value="{x:Static SystemFonts.CaptionFontSize}"/>
             <Setter Property="FontFamily" Value="{x:Static SystemFonts.CaptionFontFamily}"/>
-            <Setter Property="FontWeight" Value="{x:Static SystemFonts.CaptionFontWeight}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
 
         <Style TargetType="Border" x:Key="SectionBorder">
-            <Setter Property="BorderBrush" Value="{x:Static SystemColors.InactiveBorderBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="Navy"/>
+            <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Background" Value="{x:Static SystemColors.ControlBrush}"/>
         </Style>
 
         <Style TargetType="GroupBox">
             <Setter Property="Padding" Value="3"/>
-            <Setter Property="Background" Value="Ivory"/>
+            <Setter Property="Background" Value="Transparent"/>
         </Style>
 
         <Style TargetType="TextBlock" x:Key="Mdl2Icon">
@@ -59,6 +60,77 @@
             <Setter Property="Grid.Column" Value="1"/>
         </Style>
         <Style TargetType="ComboBox" BasedOn="{StaticResource cmbBase}"/>
+
+        <Style TargetType="Button" x:Key="mdl2Button">
+            <Setter Property="FontFamily" Value="Segoe Mdl2 Assets"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="2"/>
+        </Style>
+        <Style TargetType="Button" x:Key="btnAdd" BasedOn="{StaticResource mdl2Button}">
+            <Setter Property="Content" Value="&#xe710;"/>
+            <Setter Property="Foreground" Value="Green"/>
+        </Style>
+        <Style TargetType="Button" x:Key="btnCancel" BasedOn="{StaticResource mdl2Button}">
+            <Setter Property="Content" Value="&#xe711;"/>
+            <Setter Property="Foreground" Value="Red"/>
+        </Style>
+        <Style TargetType="Button" x:Key="btnSearch" BasedOn="{StaticResource mdl2Button}">
+            <Setter Property="Content" Value="&#xe721;"/>
+        </Style>
+        <Style TargetType="Button" x:Key="btnRefresh" BasedOn="{StaticResource mdl2Button}">
+            <Setter Property="Content" Value="&#xe72c;"/>
+        </Style>
+        <Style TargetType="Button" x:Key="btnRemove" BasedOn="{StaticResource mdl2Button}">
+            <Setter Property="Content" Value="&#xe738;"/>
+            <Setter Property="Foreground" Value="Red"/>
+        </Style>
+        <Style TargetType="Button" x:Key="btnUp" BasedOn="{StaticResource mdl2Button}">
+            <Setter Property="Content" Value="&#xe74a;"/>
+        </Style>
+        <Style TargetType="Button" x:Key="btnDown" BasedOn="{StaticResource mdl2Button}">
+            <Setter Property="Content" Value="&#xe74b;"/>
+        </Style>
+        <Style TargetType="Button" x:Key="btnDelete" BasedOn="{StaticResource mdl2Button}">
+            <Setter Property="Content" Value="&#xe74d;"/>
+            <Setter Property="Foreground" Value="Red"/>
+        </Style>
+        <Style TargetType="Button" x:Key="btnSave" BasedOn="{StaticResource mdl2Button}">
+            <Setter Property="Content" Value="&#xe74e;"/>
+            <Setter Property="Foreground" Value="Blue"/>
+        </Style>
+
+        <DataTemplate DataType="{x:Type mod:CatalogEntry }" x:Key="catEntryItemTemplate">
+            <DataTemplate.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Grid.Column" Value="1"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+            </DataTemplate.Resources>
+            <Grid VerticalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Border/>
+                <Label Grid.Row="1" Content="Title"/>
+                <TextBlock Grid.Row="1" FontSize="14" Text="{Binding Title}"/>
+                <TextBlock Grid.Row="2" Text="{Binding Subtitle}" Name="txtSubtitle" Visibility="{Binding ElementName=txtSubtitle, Path=Text, Converter={conv:StringToVisibilityConverter}}"/>
+                <Label Grid.Row="3" Content="Author(s)"/>
+                <TextBlock Grid.Row="3" Text="{Binding AuthorDisplay}"/>
+                <Label Grid.Row="4" Content="ISBN(s)"/>
+                <TextBlock Grid.Row="4" Text="{Binding IdentifierDisplay}"/>
+                <Border Grid.Row="5" BorderBrush="Navy" BorderThickness="1" Grid.ColumnSpan="2"/>
+            </Grid>
+        </DataTemplate>
 
     </Application.Resources>
 </Application>

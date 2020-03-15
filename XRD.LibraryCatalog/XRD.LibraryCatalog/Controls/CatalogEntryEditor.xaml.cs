@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,18 +11,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace XRD.LibCat {
+namespace XRD.LibCat.Controls {
 	/// <summary>
-	/// Interaction logic for MainWindow.xaml
+	/// Interaction logic for CatalogEntryEditor.xaml
 	/// </summary>
-	public partial class MainWindow : Window {
-		public MainWindow() {
+	public partial class CatalogEntryEditor : UserControl {
+		public CatalogEntryEditor() {
 			InitializeComponent();
-		}
-
-		private void btnReceiveInventory_Click(object sender, RoutedEventArgs e) {
-			ReceiveInventoryWindow wnd = new ReceiveInventoryWindow();
-			wnd.Show();
 		}
 	}
 }

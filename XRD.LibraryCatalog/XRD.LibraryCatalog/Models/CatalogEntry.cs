@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace XRD.LibCat.Models {
 	[Description("Catalog Entry")]
 	[Table("tblCatalog")]
-	public class CatalogEntry : Abstract.ModifiableEntity, IHasRestrictions, ISoftDeleted {
+	public class CatalogEntry : Abstract.ModifiableEntity, IHasRestrictions, ISoftDeleted, INotifyPropertyChanged {
 		#region Constructors
 		/// <summary>
 		/// Default constructor
@@ -97,6 +97,7 @@ namespace XRD.LibCat.Models {
 
 		[Column("ShelfLocation")]
 		private string _shelfLocation;
+
 		[StringLength(150)]
 		[Display(Name = "Shelf Location", ShortName = "Shelf", Description = "The shelf where the book should be stored in the library (optional).")]
 		public string ShelfLocation {
@@ -204,6 +205,7 @@ namespace XRD.LibCat.Models {
 			}
 		}
 
+
 		public Author AddAuthor(string name, string role = null) {
 			if (string.IsNullOrWhiteSpace(name))
 				return null;
@@ -215,8 +217,31 @@ namespace XRD.LibCat.Models {
 			if(res == null) {
 				res = new Author(this, name, Authors.Count, role);
 				Authors.Add(res);
+				FirePropertyChangedEvent(nameof(Authors));
 			}
 			return res;
+		}
+
+		public bool DelAuthor(string fullName) {
+			if (string.IsNullOrWhiteSpace(fullName))
+				return false;
+			var res = Authors.Where(a => a.FullName.ToLower().Equals(fullName.Trim().ToLower())).FirstOrDefault();
+			if(res == null) {
+				PersonName pn = new PersonName(fullName);
+				res = Authors.Where(a => a.FullName.ToLower().Equals(pn.ToFullName().ToLower())).FirstOrDefault();
+				if (res == null)
+					return false;
+			}
+			Authors.Remove(res);
+			FirePropertyChangedEvent(nameof(Authors));
+			return true;
+		}
+		public bool DelAuthor(Author author) {
+			if (!Authors.Contains(author))
+				return false;
+			Authors.Remove(author);
+			FirePropertyChangedEvent(nameof(Authors));
+			return true;
 		}
 
 		public Genre AddGenre(string genre) {
@@ -227,21 +252,62 @@ namespace XRD.LibCat.Models {
 			if(res == null) { 
 				res = new Genre(this, genre.Trim());
 				Genres.Add(res);
+				FirePropertyChangedEvent(nameof(Genres));
 			}
 			return res;
 		}
+
+		public bool DelGenre(string genre) {
+			if (string.IsNullOrWhiteSpace(genre))
+				return false;
+
+			var res = Genres.Where(g => g.Value.ToLower().Equals(genre.Trim().ToLower())).FirstOrDefault();
+			if (res == null)
+				return false;
+			Genres.Remove(res);
+			FirePropertyChangedEvent(nameof(Genres));
+			return true;
+		}
+
+		public bool DelGenre(Genre genre) {
+			if (!Genres.Contains(genre))
+				return false;
+			Genres.Remove(genre);
+			FirePropertyChangedEvent(nameof(Genres));
+			return true;
+		}		
 
 		public Identifier AddIdentifier(string identifier) {
 			if (string.IsNullOrWhiteSpace(identifier))
 				return null;
 
-			identifier = identifier.Trim().ToUpper();
+			identifier = Identifier.FixValue(identifier);
 			var res = Identifiers.Where(i => i.Value.Equals(identifier)).FirstOrDefault();
 			if (res == null) {
 				res = new Identifier(this, identifier);
 				Identifiers.Add(res);
+				FirePropertyChangedEvent(nameof(Identifiers));
 			}
 			return res;
+		}
+
+		public bool DelIdentifier(string identifier) {
+			if (string.IsNullOrWhiteSpace(identifier))
+				return false;
+			var res = Identifiers.Where(i => i.Value.Equals(Identifier.FixValue(identifier))).FirstOrDefault();
+			if (res == null)
+				return false;
+			Identifiers.Remove(res);
+			FirePropertyChangedEvent(nameof(Identifiers));
+			return true;
+		}
+
+		public bool DelIdentifier(Identifier identifier) {
+			if (!Identifiers.Contains(identifier))
+				return false;
+			Identifiers.Remove(identifier);
+			FirePropertyChangedEvent(nameof(Identifiers));
+			return true;
 		}
 
 		public OwnedBook AddOwnedBook(int bookNum) {
@@ -249,8 +315,13 @@ namespace XRD.LibCat.Models {
 			if(res == null) {
 				res = new OwnedBook(bookNum, this);
 				OwnedBooks.Add(res);
+				FirePropertyChangedEvent(nameof(OwnedBooks));
 			}
 			return res;
 		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+		private void FirePropertyChangedEvent(string pName) =>
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(pName));
 	}
 }

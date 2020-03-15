@@ -10,7 +10,7 @@ namespace XRD.LibCat.Converters {
 	public class StringToVisibilityConverter : BaseConv, IValueConverter {
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
 			if (value == null || !(value is string))
-				return Visibility.Hidden;
+				return Visibility.Collapsed;
 
 			if (string.IsNullOrWhiteSpace(value as string))
 				return Visibility.Collapsed;

@@ -1,0 +1,78 @@
+﻿<Window x:Class="XRD.LibCat.ReceiveInventoryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:conv="clr-namespace:XRD.LibCat.Converters"
+        xmlns:local="clr-namespace:XRD.LibCat"
+        mc:Ignorable="d"
+        xmlns:ctrl="clr-namespace:XRD.LibCat.Controls"
+        Title="Receive Books into Inventory" Height="450" Width="800">
+    <DockPanel>
+        <ToolBar>
+            <Label Content="Search Field:" Style="{StaticResource RequiredField}"/>
+            <ComboBox Name="cmbSearchField" SelectedIndex="0" ToolTip="Select the field to search on." SelectionChanged="cmbSearchField_SelectionChanged">
+                <ComboBoxItem>ISBN</ComboBoxItem>
+                <ComboBoxItem>Title</ComboBoxItem>
+            </ComboBox>
+            <TextBox Name="txtSearchCriteria" MinWidth="100" ToolTip="Search Criteria" SpellCheck.IsEnabled="False" KeyUp="txtSearchCriteria_KeyUp" GotFocus="txtBox_GotFocus"/>
+            <Button Name="btnSearch" ToolTip="Search for Volume Information" IsEnabled="{Binding ElementName=txtSearchCriteria, Path=Text, Converter={conv:StringToEnabledConverter}}" Click="btnSearch_Click">
+                <TextBlock Style="{StaticResource Mdl2Icon}" Text="&#xe721;"/>
+            </Button>
+            <Button x:Name="btnClearSearch" ToolTip="Reset Search Parameters" Foreground="Red" Click="btnClearSearch_Click">
+                <TextBlock Style="{StaticResource Mdl2Icon}" Text="&#xe894;"/>
+            </Button>
+            <Separator/>
+            <Button x:Name="btnAddManually" ToolTip="Manually enter the catalog information." Click="btnAddManually_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource Mdl2Icon}" Text="&#xe765;"/>
+                    <TextBlock Text="Manual Entry"/>
+                </StackPanel>
+            </Button>
+        </ToolBar>
+        <Border DockPanel.Dock="Bottom" Style="{StaticResource SectionBorder}">
+            <DockPanel>
+                <Label Style="{StaticResource SectionHeader}" Content="New Copy Details" DockPanel.Dock="Top"/>
+                <WrapPanel>
+                    <GroupBox>
+                        <GroupBox.Header>
+                            <TextBlock FontWeight="Bold" Text="New Copy ID"/>
+                        </GroupBox.Header>
+                        <TextBox x:Name="txtBookNumber" ToolTip="The number from the barcode inventory control label applied to the book." KeyDown="txtBookNumber_KeyDown" KeyUp="txtBookNumber_KeyUp" VerticalAlignment="Stretch" FontSize="14" GotFocus="txtBox_GotFocus"/>
+                    </GroupBox>
+                    <ctrl:AgeRestrictControl Grid.Row="1" x:Name="ageRestrict"/>
+                    <ctrl:GradeRestrictControl Grid.Row="1" Grid.Column="1" x:Name="gradeRestrict"/>
+                    <GroupBox Header="Location">
+                        <TextBox MaxLength="150" x:Name="txtShelf" ToolTip="The optional shelf/location where the book should be returned to." KeyUp="txtBookNumber_KeyUp" GotFocus="txtBox_GotFocus"/>
+                    </GroupBox>
+                    <Button x:Name="btnAddCopy" VerticalAlignment="Center" Margin="2" Click="btnAddCopy_Click" IsEnabled="{Binding ElementName=txtBookNumber, Path=Text, Converter={conv:StringToEnabledConverter}}">
+                        <Grid Margin="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Style="{StaticResource Mdl2Icon}" Text="&#xe710;" Foreground="Green" VerticalAlignment="Center" Grid.Column="0" Grid.RowSpan="2" Margin="2"/>
+                            <TextBlock Text="Add Copy to" HorizontalAlignment="Center" Grid.Column="1"/>
+                            <TextBlock Text="Inventory" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
+                        </Grid>
+                    </Button>
+                </WrapPanel>
+            </DockPanel>
+        </Border>
+        <TabControl>
+            <TabItem Header="Our Library Catalog" x:Name="tbiLocal">
+                <ListView x:Name="lvwLocal" ItemTemplate="{StaticResource catEntryItemTemplate}"/>
+            </TabItem>
+            <TabItem Header="Google Books API" x:Name="tbiGoogle">
+                <ctrl:GoogleSearcher IsHeaderVisible="False" x:Name="googleSearch"/> 
+            </TabItem>
+            <TabItem Header="Manual Entry" x:Name="tbiManual">
+                
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

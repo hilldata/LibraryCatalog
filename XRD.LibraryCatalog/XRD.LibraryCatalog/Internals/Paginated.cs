@@ -17,7 +17,7 @@ namespace XRD.LibCat {
 
 		#region Properties
 		protected virtual string ItemDescription { get; } = "result";
-		protected virtual int MAX_PAGE_SIZE { get; } = 10;
+		protected virtual int MAX_PAGE_SIZE { get; } = 40;
 		public virtual bool CanSearch { get; } = true;
 
 		private int _pageSize;
@@ -67,13 +67,14 @@ namespace XRD.LibCat {
 					FirePropertyChangedEvent(nameof(CanMoveNext));
 					FirePropertyChangedEvent(nameof(CanMovePrevious));
 					FirePropertyChangedEvent(nameof(PageDescription));
+					FirePropertyChangedEvent(nameof(CanSearch));
 				}
 			}
 		}
 		public int TotalPages {
 			get {
 				if (TotalItems == 0)
-					return 0;
+					return 1;
 				return (int)Math.Ceiling(TotalItems / (double)PageSize);
 			}
 		}
@@ -82,7 +83,7 @@ namespace XRD.LibCat {
 		public bool IsWorking {
 			get => _isWorking;
 			protected set {
-				if (_isWorking.Equals(value)) {
+				if (!_isWorking.Equals(value)) {
 					_isWorking = value;
 					FirePropertyChangedEvent(nameof(IsWorking));
 				}
@@ -115,16 +116,20 @@ namespace XRD.LibCat {
 			if (!CanMovePrevious)
 				return false;
 			PageIndex =1;
-			FireNavigatedEvent();
-			return await PerformWork();
+			IsWorking = true;
+			var res = await PerformWork();
+			IsWorking = false;
+			return res;
 		}
 
 		public async Task<bool> MoveNext() {
 			if (!CanMoveNext)
 				return false;
 			PageIndex++;
-			FireNavigatedEvent();
-			return await PerformWork();
+			IsWorking = true;
+			var res = await PerformWork();
+			IsWorking = false;
+			return res;
 		}
 
 		public async Task<bool> JumpToPage(int pageIndex) {
@@ -138,8 +143,10 @@ namespace XRD.LibCat {
 
 			if (!PageIndex.Equals(pageIndex)) {
 				PageIndex = pageIndex;
-				FireNavigatedEvent();
-				return await PerformWork();
+				IsWorking = true;
+				var res = await PerformWork();
+				IsWorking = false;
+				return res;
 			} else
 				return false;
 		}
@@ -147,16 +154,20 @@ namespace XRD.LibCat {
 			if (!CanMovePrevious)
 				return false;
 			PageIndex--;
-			FireNavigatedEvent();
-			return await PerformWork();
+			IsWorking = true;
+			var res = await PerformWork();
+			IsWorking = false;
+			return res;
 		}
 
 		public async Task<bool> MoveLast() {
 			if (!CanMoveNext)
 				return false;
 			PageIndex = TotalPages;
-			FireNavigatedEvent();
-			return await PerformWork();
+			IsWorking = true;
+			var res = await PerformWork();
+			IsWorking = false;
+			return res;
 		}
 	}
 }

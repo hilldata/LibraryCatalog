@@ -31,7 +31,7 @@ namespace XRD.LibCat.GoogleBooksApi {
 			get => _criteria;
 			private set {
 				if (string.IsNullOrWhiteSpace(value))
-					throw new ArgumentNullException(nameof(Criteria));
+					value = string.Empty;
 
 				value = value.Trim();
 
@@ -55,6 +55,7 @@ namespace XRD.LibCat.GoogleBooksApi {
 			private set {
 				_items = value;
 				FirePropertyChangedEvent(nameof(Items));
+				FirePropertyChangedEvent(nameof(ExactIdMatch));
 			}
 		}
 		public override bool CanSearch => !string.IsNullOrWhiteSpace(Criteria);
@@ -108,7 +109,6 @@ namespace XRD.LibCat.GoogleBooksApi {
 		}
 
 		protected async override Task<bool> PerformWork() { 
-			IsWorking = true;
 			// Submit the request to the API
 			var response = await App.HttpClient.GetAsync(searchUrl);
 
@@ -117,7 +117,6 @@ namespace XRD.LibCat.GoogleBooksApi {
 				Error err = JsonConvert.DeserializeObject<Error>(await response.Content.ReadAsStringAsync());
 				System.Windows.MessageBox.Show(err.Message, "Google Books API Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
 				Items = null;
-				IsWorking = false;
 				return false;
 			}
 
@@ -130,14 +129,18 @@ namespace XRD.LibCat.GoogleBooksApi {
 			}
 
 			// Ignore the BookVolume entity and only add the VolumeInfo to the Items list.
+
 			_items = new List<VolumeInfo>();
-			foreach(var i in res.Items) {
-				_items.Add(i.VolumeInfo);
+			if (!res.Items.IsNullOrEmpty()) {
+				foreach (var i in res.Items) {
+					_items.Add(i.VolumeInfo);
+				}
 			}
 			
 			// Fire the property changed event after all items are loaded.
+			FireNavigatedEvent();
+			FirePropertyChangedEvent(nameof(ExactIdMatch));
 			FirePropertyChangedEvent(nameof(Items));
-			IsWorking = false;
 			return true;
 		}
 
@@ -147,8 +150,10 @@ namespace XRD.LibCat.GoogleBooksApi {
 			PageSize = pageSize;
 			TotalItems = 0;
 			PageIndex = 1;
-			FireNavigatedEvent();
-			return await PerformWork();
+			IsWorking = true;
+			var res = await PerformWork();
+			IsWorking = false;
+			return res;
 		}
 
 		public void Clear() {

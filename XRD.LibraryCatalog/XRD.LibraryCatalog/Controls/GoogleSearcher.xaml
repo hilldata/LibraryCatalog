@@ -9,14 +9,18 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <goog:ApiClient x:Key="apiClient"/>
+        <goog:ApiClient x:Key="apiClient" Navigated="ApiClient_Navigated"/>
         <DataTemplate DataType="{x:Type goog:VolumeInfo}" x:Key="googVolInfoTemplate">
-            <Grid DataContext="{Binding}">
+            <Grid DataContext="{Binding}" HorizontalAlignment="Stretch">
                 <Grid.Resources>
                     <Style TargetType="Border">
                         <Setter Property="BorderBrush" Value="Navy"/>
                         <Setter Property="BorderThickness" Value="1"/>
                         <Setter Property="Grid.ColumnSpan" Value="2"/>
+                    </Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="Grid.Column" Value="1"/>
                     </Style>
                 </Grid.Resources>
                 <Grid.ColumnDefinitions>
@@ -31,10 +35,10 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <Border/>
+                <!--<Border/>-->
                 <Label Grid.Row="1" Content="Title:"/>
                 <TextBlock Grid.Row="1" Text="{Binding Title}" FontSize="14"/>
-                <TextBlock Grid.Row=" 2" Text="{Binding Subtitle}" Visibility="{Binding Subtitle, Converter={conv:StringToVisibilityConverter}}"/>
+                <TextBlock Grid.Row="2" Text="{Binding Subtitle}" Visibility="{Binding Subtitle, Converter={conv:StringToVisibilityConverter}}"/>
 
                 <Label Grid.Row="3" Content="Author(s):"/>
                 <TextBlock Grid.Row="3" Text="{Binding AuthorDisplay}"/>
@@ -48,7 +52,7 @@
     </UserControl.Resources>
     <Border Style="{StaticResource SectionBorder}">
         <DockPanel DataContext="{DynamicResource apiClient}">
-            <Label Content="Google Books API Results" DockPanel.Dock="Top" Style="{StaticResource SectionHeader}"/>
+            <Label Content="Google Books API Results" DockPanel.Dock="Top" Style="{StaticResource SectionHeader}" Name="lblHeader"/>
             <ToolBarTray DockPanel.Dock="Top">
                 <ToolBar>
                     <ToggleButton x:Name="tglExactMatch" ToolTip="Filter for an exact match to the ISBN searched for." IsEnabled="{Binding ExactIdMatch, Converter={conv:NullableToEnabledConverter}}" Checked="tglExactMatch_Checked" Unchecked="tglExactMatch_Checked">
