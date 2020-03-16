@@ -5,11 +5,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ctrl="clr-namespace:XRD.LibCat.Controls"
              xmlns:mod="clr-namespace:XRD.LibCat.Models"
+             xmlns:local="clr-namespace:XRD.LibCat"
              xmlns:conv="clr-namespace:XRD.LibCat.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <mod:CatalogEntry x:Key="selEntry"/>
+        <Style TargetType="Border">
+            <Setter Property="Margin" Value="0,2,-1,2"/>
+            <Setter Property="Background" Value="{x:Static SystemColors.ControlLightBrush}"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="addLabel">
+            <Setter Property="FontStyle" Value="Italic"/>
+            <Setter Property="Grid.Column" Value="0"/>
+            <Setter Property="Margin" Value="2,0,0,0"/>
+        </Style>
     </UserControl.Resources>
     <ScrollViewer>
         <Grid DataContext="{DynamicResource selEntry}">
@@ -21,12 +31,12 @@
                 <RowDefinition Height="auto" x:Name="rowTitle"/>
                 <RowDefinition Height="auto" x:Name="rowSubtitle"/>
                 <RowDefinition Height="auto" x:Name="rowAuthors"/>
-                <RowDefinition Height="75" x:Name="rowGenres"/>
+                <RowDefinition Height="75" x:Name="rowIsbns"/>
                 <RowDefinition Height="50" x:Name="rowDescription"/>
                 <RowDefinition Height="auto" x:Name="rowPublisher"/>
                 <RowDefinition Height="auto" x:Name="rowPubDate"/>
                 <RowDefinition Height="auto" x:Name="rowPages"/>
-                <RowDefinition Height="75" x:Name="rowISBNs"/>
+                <RowDefinition Height="75" x:Name="rowGenres"/>
             </Grid.RowDefinitions>
             <Label Style="{StaticResource RequiredField}" Content="Title:" FontSize="14"/>
             <TextBox Text="{Binding Title}" MaxLength="1000" FontSize="14"/>
@@ -36,11 +46,6 @@
             <Border Grid.Row="2" Grid.Column="1" BorderBrush="Blue" BorderThickness="1">
                 <Grid>
                     <Grid.Resources>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="FontStyle" Value="Italic"/>
-                            <Setter Property="Grid.Column" Value="0"/>
-                            <Setter Property="Margin" Value="2,0,0,0"/>
-                        </Style>
                         <Style TargetType="TextBox">
                             <Setter Property="Grid.Column" Value="0"/>
                             <Setter Property="Margin" Value="2,0,2,2"/>
@@ -58,25 +63,48 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="New Author's Name" FontWeight="Bold"/>
-                    <TextBox Grid.Row="1" Name="txtNewAuthName" MaxLength="400" ToolTip="The full name of the author to add (it will be parsed and formatted to Last, First before saving)."/>
-                    <TextBlock Grid.Row="2" Text="New Author's Role (optional)"/>
-                    <TextBox Grid.Row="3" Name="txtNewAuthRole" MaxLength="150" ToolTip="The role the author held in creating the item."/>
+                    <TextBlock Text="New Author's Name" Style="{StaticResource addLabel}"/>
+                    <TextBox Grid.Row="1" Name="txtNewAuthName" MaxLength="400" ToolTip="The full name of the author to add (it will be parsed and formatted to Last, First before saving)." KeyUp="txtNewAuthName_KeyUp"/>
+                    <TextBlock Grid.Row="2" Text="New Author's Role (optional)" Style="{StaticResource addLabel}"/>
+                    <TextBox Grid.Row="3" Name="txtNewAuthRole" MaxLength="150" ToolTip="The role the author held in creating the item." KeyUp="txtNewAuthName_KeyUp"/>
                     <StackPanel Grid.Column="1" Grid.Row="1" Grid.RowSpan="4" Margin="2,0,2,2">
-                        <Button Name="btnAddAuthor" ToolTip="Add author." IsEnabled="{Binding ElementName=txtNewAuthName, Path=Text, Converter={conv:StringToEnabledConverter}}">
-                            <TextBlock Style="{StaticResource Mdl2Icon}" Text="&#xe710;" Foreground="Green"/>
-                        </Button>
-                        <Button x:Name="btnDelAuthor" ToolTip="Deleted the selected author." IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:NullableToEnabledConverter}}">
-                            <TextBlock Style="{StaticResource Mdl2Icon}" Text="&#xe738;" Foreground="Red"/>
-                        </Button>
-                        <Button x:Name="btnMoveAuthUp" ToolTip="Move the selected author up in the list.">
-                            <TextBlock Style="{StaticResource Mdl2Icon}" Text="&#xf0ad;"/>
-                        </Button>
-                        <Button x:Name="btnMoveAuthDown" ToolTip="Move the selecteda author down in the list.">
-                            <TextBlock Style="{StaticResource Mdl2Icon}" Text="&#xf0ae;"/>
-                        </Button>
+                        <Button Name="btnAddAuthor" ToolTip="Add author." Click="btnAddAuthor_Click"
+                                Style="{StaticResource Mdl2Button}"
+                                ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Add}"
+                                ctrl:Mdl2AssetProperty.Mdl2Brush="Green"
+                                IsEnabled="{Binding ElementName=txtNewAuthName, Path=Text, Converter={conv:StringToEnabledConverter}}"/>
+                        <Button x:Name="btnDelAuthor" ToolTip="Delete the selected author."  Click="btnDelAuthor_Click"
+                                Style="{StaticResource Mdl2Button}"
+                                ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Remove}"
+                                ctrl:Mdl2AssetProperty.Mdl2Brush="Red"
+                                IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:NullableToEnabledConverter}}"/>
+                        <Button x:Name="btnMoveAuthUp" ToolTip="Move the selected author up in the list." Click="btnMoveAuthUp_Click"
+                                Style="{StaticResource Mdl2Button}"
+                                IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:CanMoveUpConverter}}"
+                                ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Up}"/>
+                        <Button x:Name="btnMoveAuthDown" ToolTip="Move the selected author down in the list." Click="btnMoveAuthDown_Click"
+                                Style="{StaticResource Mdl2Button}" 
+                                IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:CanMoveDownConverter}, ConverterParameter=ItemsSource}"
+                                ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Down}"/>
                     </StackPanel>
-                    <ListView Grid.Column="2" Grid.RowSpan="3" x:Name="lvwAuthors" ItemsSource="{Binding Authors}" Margin="2">
+                    <ListView Grid.Column="2" Grid.RowSpan="5" x:Name="lvwAuthors" SelectionMode="Single" KeyUp="lvwAuthors_KeyUp" ItemsSource="{Binding Authors}" Margin="2">
+                        <ListView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Name="mnuDelAuth" Header="Delete Author" ToolTip="Delete the selected author." Click="btnDelAuthor_Click"
+                                          Style="{StaticResource Mdl2MenuItem}"
+                                          ctrl:Mdl2AssetProperty.Mdl2Brush="Red"
+                                          ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Remove}"
+                                          IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:NullableToEnabledConverter}}"/>
+                                <MenuItem Name="mnuMoveAuthUp" Header="Move Author Up" ToolTip="Move the selected author up in the list." Click="btnMoveAuthUp_Click"
+                                          Style="{StaticResource Mdl2MenuItem}"
+                                          IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:CanMoveUpConverter}}"
+                                          ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Up}"/>
+                                <MenuItem Name="mnuMoveAuthDown" Header="Move Author Down" ToolTip="Move the selected author down in the list." Click="btnMoveAuthDown_Click"
+                                          Style="{StaticResource Mdl2MenuItem}"
+                                          IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:CanMoveDownConverter}, ConverterParameter=ItemsSource}"
+                                          ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Down}"/>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="#" DisplayMemberBinding="{Binding OrdIndex}" Width="auto"/>
@@ -84,6 +112,106 @@
                                 <GridViewColumn Header="Role" DisplayMemberBinding="{Binding Role}" Width="150"/>
                             </GridView>
                         </ListView.View>
+                    </ListView>
+                </Grid>
+            </Border>
+            <Label Content="Identifier(s):" Grid.Row="3"/>
+            <Border Grid.Row="3" Grid.Column="1" BorderBrush="Blue" BorderThickness="1">
+                <Grid>
+                    <Grid.Resources>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Grid.Column" Value="0"/>
+                            <Setter Property="Margin" Value="2,0,2,2"/>
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="New Identifier (ISBN)" Style="{StaticResource addLabel}"/>
+                    <TextBox Grid.Row="1" Name="txtNewIsbn" MaxLength="50" ToolTip="The new ISBN to add." KeyUp="txtNewIsbn_KeyUp"/>
+                    <StackPanel Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Margin="2,0,2,2">
+                        <Button Name="btnAddIsbn" ToolTip="Add ISBN." Click="btnAddIsbn_Click"
+                                Style="{StaticResource Mdl2Button}"
+                                ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Add}"
+                                ctrl:Mdl2AssetProperty.Mdl2Brush="Green"
+                                IsEnabled="{Binding ElementName=txtNewIsbn, Path=Text, Converter={conv:StringToEnabledConverter}}"/>
+                        <Button x:Name="btnDelISBN" ToolTip="Delete the selected ISBN." Click="btnDelISBN_Click"
+                                Style="{StaticResource Mdl2Button}"
+                                ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Remove}"
+                                ctrl:Mdl2AssetProperty.Mdl2Brush="Red"
+                                IsEnabled="{Binding ElementName=lvwIsbn, Path=SelectedItem, Converter={conv:NullableToEnabledConverter}}"/>
+                    </StackPanel>
+                    <ListView Grid.Column="2" Grid.RowSpan="3" x:Name="lvwIsbn" SelectionMode="Single" ItemsSource="{Binding Identifiers}" Margin="2" DisplayMemberPath="Value" KeyUp="lvwIsbn_KeyUp">
+                        <ListView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Name="mnuDelIsbn" Header="Delete ISBN" ToolTip="Delete the selected ISBN." 
+                                          Style="{StaticResource Mdl2MenuItem}"
+                                          ctrl:Mdl2AssetProperty.Mdl2Brush="Red" Click="btnDelISBN_Click"
+                                          ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Remove}"
+                                          IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:NullableToEnabledConverter}}"/>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
+                    </ListView>
+                </Grid>
+            </Border>
+            <Label Content="Description:" Grid.Row="4"/>
+            <TextBox Text="{Binding Description}" Grid.Row="4" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" VerticalAlignment="Stretch" ToolTip="A brief synopsis/description of the work."/>
+            <Label Content="Publisher:" Grid.Row="5"/>
+            <TextBox Grid.Row="5" Text="{Binding Publisher}" MaxLength="1000" ToolTip="The name of the company that published the work."/>
+            <Label Content="Pub. Date:" Grid.Row="6"/>
+            <TextBox Grid.Row="6" Text="{Binding PubDate}" MaxLength="100" ToolTip="Any available publication date details available for the work."/>
+            <Label Grid.Row="7" Content="# of Pages:"/>
+            <TextBox Grid.Row="7" Text="{Binding PageCount}" MaxLength="5" ToolTip="The number of pages in the work." Name="txtPageCount" KeyDown="txtPageCount_KeyDown"/>
+            <Label Content="Genre(s):" Grid.Row="8"/>
+            <Border Grid.Row="8" Grid.Column="1" BorderBrush="Blue" BorderThickness="1">
+                <Grid>
+                    <Grid.Resources>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Grid.Column" Value="0"/>
+                            <Setter Property="Margin" Value="2,0,2,2"/>
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="New Genre" Style="{StaticResource addLabel}"/>
+                    <TextBox Grid.Row="1" Name="txtNewGenre" MaxLength="50" ToolTip="The new Genre to add." KeyUp="txtNewGenre_KeyUp" />
+                    <StackPanel Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Margin="2,0,2,2">
+                        <Button Name="btnAddGenre" ToolTip="Add Genre." Click="btnAddGenre_Click"
+                                Style="{StaticResource Mdl2Button}"
+                                ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Add}"
+                                ctrl:Mdl2AssetProperty.Mdl2Brush="Green"
+                                IsEnabled="{Binding ElementName=txtNewIsbn, Path=Text, Converter={conv:StringToEnabledConverter}}"/>
+                        <Button x:Name="btnDelGenre" ToolTip="Delete the selected Genre." Click="btnDelGenre_Click"
+                                Style="{StaticResource Mdl2Button}"
+                                ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Remove}"
+                                ctrl:Mdl2AssetProperty.Mdl2Brush="Red"
+                                IsEnabled="{Binding ElementName=lvwIsbn, Path=SelectedItem, Converter={conv:NullableToEnabledConverter}}"/>
+                    </StackPanel>
+                    <ListView Grid.Column="2" Grid.RowSpan="3" x:Name="lvwGenre" SelectionMode="Single" ItemsSource="{Binding Genres}" Margin="2" DisplayMemberPath="Value" KeyUp="lvwGenre_KeyUp" >
+                        <ListView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Name="mnuDelGenre" Header="Delete Genre" ToolTip="Delete the selected Genre."
+                                          Style="{StaticResource Mdl2MenuItem}" Click="btnDelGenre_Click"
+                                          ctrl:Mdl2AssetProperty.Mdl2Brush="Red"
+                                          ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Remove}"
+                                          IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:NullableToEnabledConverter}}"/>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
                     </ListView>
                 </Grid>
             </Border>

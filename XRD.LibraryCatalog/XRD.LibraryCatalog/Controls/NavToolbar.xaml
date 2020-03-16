@@ -1,0 +1,45 @@
+﻿<ToolBar x:Class="XRD.LibCat.Controls.NavToolbar"
+             xmlns:conv="clr-namespace:XRD.LibCat.Converters"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+         xmlns:ctl="clr-namespace:XRD.LibCat.Controls"
+             xmlns:local="clr-namespace:XRD.LibCat"
+             mc:Ignorable="d" ToolBarTray.IsLocked="True"
+         DataContext="{DynamicResource target}" IsEnabled="{Binding CanSearch}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <ToolBar.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <local:Paginated x:Key="target"/>
+    </ToolBar.Resources>
+    <ContentPresenter/>
+    <Button x:Name="btnFirst" Style="{StaticResource Mdl2Button}" 
+                ctl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Previous}" 
+                ToolTip="Jump to the first page of results." Click="btnFirst_Click"
+                IsEnabled="{Binding CanMovePrevious}"/>
+    <Button x:Name="btnPrevious" Style="{StaticResource Mdl2Button}" 
+                ctl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.PageLeft}" 
+                ToolTip="Go to the the previous page of results." Click="btnPrevious_Click"
+                IsEnabled="{Binding CanMovePrevious}"/>
+    <TextBlock Text="Page "/>
+    <ComboBox x:Name="cmbJump" VerticalAlignment="Center" SelectionChanged="cmbJump_SelectionChanged"
+                  ToolTip="Jump to a specific page of results."/>
+    <TextBlock Text=" of "/>
+    <TextBlock Text="{Binding TotalPages}"/>
+    <Button x:Name="btnNext" Style="{StaticResource Mdl2Button}"
+                ctl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.PageRight}"
+                ToolTip="Go to the next page of results." Click="btnNext_Click"
+                IsEnabled="{Binding CanMoveNext}"/>
+    <Button x:Name="btnLast" Style="{StaticResource Mdl2Button}"
+                ctl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Next}"
+                ToolTip="Jump to the last page of results." Click="btnLast_Click"
+                IsEnabled="{Binding CanMoveNext}"/>
+    <Separator/>
+    <TextBlock Text="{Binding PageDescription}" 
+                   Visibility="{Binding IsWorking, Converter={conv:BoolToVisibilityReversedConverter}}"/>
+    <ProgressBar Width="100" IsIndeterminate="True" ToolTip="Loading data."
+                     Visibility="{Binding IsWorking, Converter={conv:BoolToVisibilityConverter}}"/>
+</ToolBar>

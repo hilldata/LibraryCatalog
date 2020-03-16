@@ -1,4 +1,7 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using XRD.LibCat.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text;
@@ -19,12 +22,16 @@ namespace XRD.LibCat {
 		public ReceiveInventoryWindow() {
 			InitializeComponent();
 		}
+		private readonly LibraryContext _db = App.DbContext;
 
 		private void ClearSearch() {
 			if(lvwLocal != null)
 				lvwLocal.ItemsSource = null;
 			googleSearch?.ClearSearch();
 			txtSearchCriteria?.Clear();
+
+			if (tbiLocal != null)
+				tbiLocal.IsSelected=true;
 			txtSearchCriteria?.Focus();
 		}
 
@@ -33,10 +40,25 @@ namespace XRD.LibCat {
 				return;
 
 			txtSearchCriteria.IsEnabled = false;
-			if(cmbSearchField.SelectedIndex == 0) { //Search ISBN
+			if (cmbSearchField.SelectedIndex == 0) { //Search ISBN
 				await googleSearch.Search(GoogleBooksApi.SearchFields.ISBN, txtSearchCriteria.Text.Trim());
+				lvwLocal.ItemsSource = await _db.AddCatalogIncludes(_db.QueryBooksByIdentifier(txtSearchCriteria.Text.Trim())).ToListAsync();
+			} else {// Search Title
+				await googleSearch.Search(GoogleBooksApi.SearchFields.InTitle, txtSearchCriteria.Text.Trim());
+				lvwLocal.ItemsSource = await _db.AddCatalogIncludes(_db.QueryBooksByTitle(txtSearchCriteria.Text.Trim())).ToListAsync();
+			}
+			if (lvwLocal.Items.Count > 0) {
+				tbiLocal.IsSelected = true;
+				lvwLocal.SelectedItem = lvwLocal.Items[0];
+			} else if (googleSearch.Client.Items.Count > 0) {
+				tbiGoogle.IsSelected = true;
+			} else {
+				StartManualEntry();
 			}
 			txtSearchCriteria.IsEnabled = true;
+		}
+
+		private void UpdateLocalHeader() {
 		}
 
 		private async void txtSearchCriteria_KeyUp(object sender, KeyEventArgs e) {
@@ -57,7 +79,12 @@ namespace XRD.LibCat {
 		}
 
 		private void btnAddManually_Click(object sender, RoutedEventArgs e) {
+			StartManualEntry();
+		}
+
+		private void StartManualEntry() { 
 			tbiManual.IsSelected = true;
+			manualEditor.SelCatalogEntry = null;
 		}
 
 		private async Task AddBookToInventory() {

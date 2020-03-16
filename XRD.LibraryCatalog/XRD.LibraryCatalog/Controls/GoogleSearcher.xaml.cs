@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Collections.Generic;
@@ -50,6 +51,8 @@ namespace XRD.LibCat.Controls {
 
 		public ApiClient Client => (ApiClient)Resources["apiClient"];
 
+		private System.Windows.Controls.Primitives.ToggleButton tglExactMatch =>
+			navTb.Items.SourceCollection.OfType<System.Windows.Controls.Primitives.ToggleButton>().First();
 		private void tglExactMatch_Checked(object sender, RoutedEventArgs e) {
 			if (Client == null || _navigating)
 				return;

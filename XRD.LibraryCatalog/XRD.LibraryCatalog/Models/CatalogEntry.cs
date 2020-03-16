@@ -215,7 +215,7 @@ namespace XRD.LibCat.Models {
 
 			var res = Authors.Where(a => a.FullName.ToLower().Equals(name.ToLower())).FirstOrDefault();
 			if(res == null) {
-				res = new Author(this, name, Authors.Count, role);
+				res = new Author(this, name, Authors.Count + 1, role);
 				Authors.Add(res);
 				FirePropertyChangedEvent(nameof(Authors));
 			}
@@ -233,6 +233,7 @@ namespace XRD.LibCat.Models {
 					return false;
 			}
 			Authors.Remove(res);
+			RenumberAuthors();
 			FirePropertyChangedEvent(nameof(Authors));
 			return true;
 		}
@@ -240,8 +241,62 @@ namespace XRD.LibCat.Models {
 			if (!Authors.Contains(author))
 				return false;
 			Authors.Remove(author);
+			RenumberAuthors();
 			FirePropertyChangedEvent(nameof(Authors));
 			return true;
+		}
+
+		public bool MoveAuthorDown(Author author) {
+			if (author == null)
+				return false;
+			if (Authors.IsNullOrEmpty())
+				return false;
+			if (author.OrdIndex < Authors.Count) {
+				var next = Authors.Where(a => a.OrdIndex > author.OrdIndex).OrderBy(a => a.OrdIndex).FirstOrDefault();
+				if (next == null)
+					return false;
+				int temp = next.OrdIndex;
+				next.OrdIndex = author.OrdIndex;
+				author.OrdIndex = temp;
+				FirePropertyChangedEvent(nameof(Authors));
+				return true;
+			}
+			return false;
+		}
+
+		public bool MoveAuthorUp(Author author) {
+			if (author == null)
+				return false;
+			if (Authors.IsNullOrEmpty())
+				return false;
+			if(author.OrdIndex > 1) {
+				var prev = Authors.Where(a => a.OrdIndex < author.OrdIndex).OrderByDescending(a => a.OrdIndex).FirstOrDefault();
+				if (prev == null)
+					return false;
+				int temp = prev.OrdIndex;
+				prev.OrdIndex = author.OrdIndex;
+				author.OrdIndex = temp;
+				FirePropertyChangedEvent(nameof(Authors));
+				return true;
+			}
+			return false;
+		}
+
+		public bool RenumberAuthors() {
+			if (Authors.IsNullOrEmpty())
+				return false;
+			int c = 0;
+			bool changed = false;
+			foreach(Author a in Authors.OrderBy(a=>a.OrdIndex)) {
+				c++;
+				if (a.OrdIndex != c) {
+					a.OrdIndex = c;
+					changed = true;
+				}
+			}
+			if (changed)
+				FirePropertyChangedEvent(nameof(Authors));
+			return changed;
 		}
 
 		public Genre AddGenre(string genre) {

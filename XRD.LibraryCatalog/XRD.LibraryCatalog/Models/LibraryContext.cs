@@ -88,7 +88,7 @@ namespace XRD.LibCat.Models {
 			}
 		}
 
-		private static Dictionary<Type, string> EntityDisplayNames = new Dictionary<Type, string>();
+		private static readonly Dictionary<Type, string> EntityDisplayNames = new Dictionary<Type, string>();
 		public string GetDisplayName(Type t) {
 			if (EntityDisplayNames.ContainsKey(t)) {
 				return EntityDisplayNames[t];

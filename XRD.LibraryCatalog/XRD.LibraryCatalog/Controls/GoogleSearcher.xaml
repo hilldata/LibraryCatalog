@@ -4,67 +4,74 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:goog="clr-namespace:XRD.LibCat.GoogleBooksApi"
-             xmlns:local="clr-namespace:XRD.LibCat.Controls"
+             xmlns:ctrl="clr-namespace:XRD.LibCat.Controls"
+             xmlns:local="clr-namespace:XRD.LibCat"
              xmlns:conv="clr-namespace:XRD.LibCat.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <goog:ApiClient x:Key="apiClient" Navigated="ApiClient_Navigated"/>
         <DataTemplate DataType="{x:Type goog:VolumeInfo}" x:Key="googVolInfoTemplate">
-            <Grid DataContext="{Binding}" HorizontalAlignment="Stretch">
-                <Grid.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="BorderBrush" Value="Navy"/>
-                        <Setter Property="BorderThickness" Value="1"/>
-                        <Setter Property="Grid.ColumnSpan" Value="2"/>
-                    </Style>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="VerticalAlignment" Value="Center"/>
-                        <Setter Property="Grid.Column" Value="1"/>
-                    </Style>
-                </Grid.Resources>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <!--<Border/>-->
-                <Label Grid.Row="1" Content="Title:"/>
-                <TextBlock Grid.Row="1" Text="{Binding Title}" FontSize="14"/>
-                <TextBlock Grid.Row="2" Text="{Binding Subtitle}" Visibility="{Binding Subtitle, Converter={conv:StringToVisibilityConverter}}"/>
+            <Border BorderBrush="LightBlue" BorderThickness="1">
+                <Grid DataContext="{Binding}" HorizontalAlignment="Stretch">
+                    <Grid.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="Grid.ColumnSpan" Value="3"/>
+                        </Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Grid.Column" Value="1"/>
+                            <Setter Property="TextWrapping" Value="Wrap"/>
+                            <Setter Property="MaxWidth" Value="600"/>
+                        </Style>
+                        <Style x:Key="label" TargetType="TextBlock">
+                            <Setter Property="FontStyle" Value="Italic"/>
+                            <Setter Property="Grid.Column" Value="0"/>
+                            <Setter Property="Foreground" Value="{x:Static SystemColors.GrayTextBrush}"/>
+                            <Setter Property="Margin" Value="0,1,6,1"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="600"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Title:" Style="{StaticResource label}" Grid.RowSpan="2"/>
+                    <TextBlock Grid.Row="0" Text="{Binding Title}" FontSize="14"/>
+                    <TextBlock Grid.Row="1" Text="{Binding Subtitle}" Visibility="{Binding Subtitle, Converter={conv:StringToVisibilityConverter}}"/>
 
-                <Label Grid.Row="3" Content="Author(s):"/>
-                <TextBlock Grid.Row="3" Text="{Binding AuthorDisplay}"/>
+                    <TextBlock Style="{StaticResource label}" Grid.Row="2" Text="Author(s):"/>
+                    <TextBlock Grid.Row="2" Text="{Binding AuthorDisplay}"/>
 
-                <Label Grid.Row="4" Content="Identifier(s):"/>
-                <TextBlock Grid.Row="4" Text="{Binding IsbnDisplay}"/>
+                    <TextBlock Style="{StaticResource label}" Grid.Row="3" Text="Identifier(s):"/>
+                    <TextBlock Grid.Row="3" Text="{Binding IsbnDisplay}"/>
 
-                <Border Grid.Row="5"/>
-            </Grid>
+                    <TextBlock Grid.RowSpan="5" Grid.Column="2" FontStyle="Italic" Margin="12,1,1,1" Text="{Binding Description}" VerticalAlignment="Stretch" Background="Ivory"/>
+                </Grid>
+            </Border>
         </DataTemplate>
     </UserControl.Resources>
     <Border Style="{StaticResource SectionBorder}">
         <DockPanel DataContext="{DynamicResource apiClient}">
             <Label Content="Google Books API Results" DockPanel.Dock="Top" Style="{StaticResource SectionHeader}" Name="lblHeader"/>
-            <ToolBarTray DockPanel.Dock="Top">
-                <ToolBar>
-                    <ToggleButton x:Name="tglExactMatch" ToolTip="Filter for an exact match to the ISBN searched for." IsEnabled="{Binding ExactIdMatch, Converter={conv:NullableToEnabledConverter}}" Checked="tglExactMatch_Checked" Unchecked="tglExactMatch_Checked">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Style="{StaticResource Mdl2Icon}" Text="&#xe71c;"/>
-                            <TextBlock Text="Exact Match"/>
-                        </StackPanel>
-                    </ToggleButton>
-                    <Separator/>
-                </ToolBar>
-                <local:NavigationToolbar Target="{DynamicResource apiClient}"/>
-            </ToolBarTray>
+            <ctrl:NavToolbar Target="{DynamicResource apiClient}" x:Name="navTb" DockPanel.Dock="Top">
+                <Separator/>
+                <ToggleButton Style="{StaticResource Mdl2Toggle}" 
+                                  ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Filter}" 
+                                  IsEnabled="{Binding ExactIdMatch, Converter={conv:NullableToEnabledConverter}}"
+                                  Content="Exact Match" Tag="tglFilter" 
+                                  Checked="tglExactMatch_Checked" Unchecked="tglExactMatch_Checked"/>
+            </ctrl:NavToolbar>
             <ListView x:Name="lvw" ItemTemplate="{StaticResource googVolInfoTemplate}" ItemsSource="{Binding Items}"/>
         </DockPanel>
     </Border>
