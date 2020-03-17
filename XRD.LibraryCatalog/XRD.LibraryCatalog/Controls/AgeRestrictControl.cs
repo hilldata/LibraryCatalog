@@ -41,9 +41,24 @@ namespace XRD.LibCat.Controls {
 	///     <MyNamespace:AgeRestrictControl/>
 	///
 	/// </summary>
+	[TemplatePart(Name ="PART_btnReset", Type =typeof(Button))]
 	public class AgeRestrictControl : Control {
 		static AgeRestrictControl() {
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(AgeRestrictControl), new FrameworkPropertyMetadata(typeof(AgeRestrictControl)));
+		}
+		public AgeRestrictControl() : base() {
+			Loaded += AgeRestrictControl_Loaded;
+		}
+
+		private void AgeRestrictControl_Loaded(object sender, RoutedEventArgs e) {
+			var btnReset = (Button)Template.FindName("PART_btnReset", this);
+			if(btnReset != null)
+				btnReset.Click += BtnReset_Click;
+		}
+
+		private void BtnReset_Click(object sender, RoutedEventArgs e) {
+			MinAge = 0;
+			MaxAge = 0;
 		}
 
 		#region MinAgeProperty

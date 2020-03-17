@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -45,6 +46,7 @@ namespace XRD.LibCat.Models {
 		public virtual OwnedBook Book { get; set; }
 		public virtual Patron Patron { get; set; }
 		#endregion
+		public override List<EntityValidationError> Validate() => null;
 
 		public void CheckIn(DateTime? checkInTime = null) {
 			CheckInDate = checkInTime ?? DateTime.Now;

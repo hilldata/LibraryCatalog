@@ -42,6 +42,7 @@ namespace XRD.LibCat.Controls {
 	///     <MyNamespace:GradeRestrictControl/>
 	///
 	/// </summary>
+	[TemplatePart(Name = "PART_btnReset", Type = typeof(Button))]
 	public class GradeRestrictControl : Control {
 		static GradeRestrictControl() {
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(GradeRestrictControl), new FrameworkPropertyMetadata(typeof(GradeRestrictControl)));
@@ -83,5 +84,20 @@ namespace XRD.LibCat.Controls {
 			set => SetValue(OrientationProperty, value);
 		}
 		#endregion
+
+		public GradeRestrictControl() : base() {
+			Loaded += GradeRestrictControl_Loaded;
+		}
+
+		private void GradeRestrictControl_Loaded(object sender, RoutedEventArgs e) {
+			var btnReset = (Button)Template.FindName("PART_btnReset", this);
+			if (btnReset != null)
+				btnReset.Click += BtnReset_Click;
+		}
+
+		private void BtnReset_Click(object sender, RoutedEventArgs e) {
+			MinGrade = GradeLevels.NotSet;
+			MaxGrade = GradeLevels.NotSet;
+		}
 	}
 }

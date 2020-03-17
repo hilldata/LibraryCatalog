@@ -70,6 +70,8 @@ namespace XRD.LibCat.Models {
 		public virtual StaffMember Teacher { get; set; }
 		#endregion
 
+		public override List<EntityValidationError> Validate() => base.Validate();
+
 		protected override void InstantiateCollections() {
 			base.InstantiateCollections();
 			BorrowingHistories = new HashSet<BorrowingHistory>();

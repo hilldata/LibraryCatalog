@@ -34,12 +34,6 @@
             <DockPanel>
                 <Label Style="{StaticResource SectionHeader}" Content="New Copy Details" DockPanel.Dock="Top"/>
                 <WrapPanel>
-                    <GroupBox>
-                        <GroupBox.Header>
-                            <TextBlock FontWeight="Bold" Text="New Copy ID"/>
-                        </GroupBox.Header>
-                        <TextBox x:Name="txtBookNumber" ToolTip="The number from the barcode inventory control label applied to the book." KeyDown="txtBookNumber_KeyDown" KeyUp="txtBookNumber_KeyUp" VerticalAlignment="Stretch" FontSize="14" GotFocus="txtBox_GotFocus"/>
-                    </GroupBox>
                     <GroupBox Header="Age Restrictions" >
                         <ctrl:AgeRestrictControl x:Name="ageRestrict"/>
                     </GroupBox>
@@ -49,8 +43,17 @@
                     <GroupBox Header="Location">
                         <TextBox MaxLength="150" x:Name="txtShelf" ToolTip="The optional shelf/location where the book should be returned to." KeyUp="txtBookNumber_KeyUp" GotFocus="txtBox_GotFocus"/>
                     </GroupBox>
-                    <Button x:Name="btnAddCopy" VerticalAlignment="Center" Margin="2" Style="{StaticResource Mdl2Button}" ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Add}" Click="btnAddCopy_Click" IsEnabled="{Binding ElementName=txtBookNumber, Path=Text, Converter={conv:StringToEnabledConverter}}" ctrl:Mdl2AssetProperty.Mdl2Brush="Green">
-                        <TextBlock Margin="2" Text="Add Copy to Inventory"/>
+                    <GroupBox>
+                        <GroupBox.Header>
+                            <TextBlock FontWeight="Bold" Text="New Copy ID"/>
+                        </GroupBox.Header>
+                        <TextBox x:Name="txtBookNumber" ToolTip="The number from the barcode inventory control label applied to the book." KeyDown="txtBookNumber_KeyDown" KeyUp="txtBookNumber_KeyUp" VerticalAlignment="Stretch" FontSize="14" GotFocus="txtBox_GotFocus"/>
+                    </GroupBox>
+                    <Button x:Name="btnAddCopy" VerticalAlignment="Center" Margin="2" 
+                            Style="{StaticResource Mdl2Button}" ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Add}" 
+                            Click="btnAddCopy_Click" IsEnabled="{Binding ElementName=txtBookNumber, Path=Text, Converter={conv:StringToEnabledConverter}}" ctrl:Mdl2AssetProperty.Mdl2Brush="Green"
+                            ToolTip="Add the copy to our inventory.">
+                        <TextBlock Margin="2" Text="Add Copy"/>
                     </Button>
                 </WrapPanel>
             </DockPanel>

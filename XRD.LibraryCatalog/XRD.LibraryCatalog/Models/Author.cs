@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,15 +12,15 @@ namespace XRD.LibCat.Models {
 	public class Author : Abstract.Entity {
 		public Author() : base() { }
 
-		public Author(int volId, string authorName, int ordIndex = 0, string role = null) : base(true) {
-			VolId = volId;
+		public Author(int catId, string authorName, int ordIndex = 0, string role = null) : base(true) {
+			CatId = catId;
 			FullName = authorName;
 			OrdIndex = ordIndex;
 			Role = role;
 		}
 
-		public Author(CatalogEntry vol, string authorName, int ordIndex = 0, string role = null) : base(true) {
-			Book = vol;
+		public Author(CatalogEntry book, string authorName, int ordIndex = 0, string role = null) : base(true) {
+			Book = book;
 			FullName = authorName;
 			OrdIndex = ordIndex;
 			Role = role;
@@ -29,7 +30,7 @@ namespace XRD.LibCat.Models {
 		/// <summary>
 		/// FK to the Book
 		/// </summary>
-		public int VolId { get; private set; }
+		public int CatId { get; private set; }
 
 		private string _name;
 		[StringLength(400)]
@@ -62,6 +63,14 @@ namespace XRD.LibCat.Models {
 		#endregion
 
 		public override string ToString() => $"{OrdIndex}. {FullName}{(!string.IsNullOrWhiteSpace(Role) ? " (" + Role + ")" : string.Empty)}";
+		public override List<EntityValidationError> Validate() {
+			List<EntityValidationError> res = new List<EntityValidationError>();
+			if (string.IsNullOrWhiteSpace(FullName))
+				res.Add(new EntityValidationError(nameof(FullName), "Full Name is required"));
+			if (Book == null && CatId == 0)
+				res.Add(new EntityValidationError(nameof(Book), "No Catalog Entry has been assigned."));
+			return res;
+		}
 
 		#region Navigation
 		public virtual CatalogEntry Book { get; set; }
@@ -72,12 +81,12 @@ namespace XRD.LibCat.Models {
 				base.Configure(builder);
 
 				builder.HasIndex(ba => new {
-					ba.VolId,
+					ba.CatId,
 					ba.FullName
 				}).IsUnique();
 
 				builder.HasIndex(ba => new {
-					ba.VolId,
+					ba.CatId,
 					ba.OrdIndex
 				});
 			}

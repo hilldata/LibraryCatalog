@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace XRD.LibCat.Models.Abstract {
 	public abstract class Person : ModifiableEntity, ISoftDeleted {
@@ -33,6 +34,7 @@ namespace XRD.LibCat.Models.Abstract {
 
 		private string _first;
 		[StringLength(50)]
+		[Required]
 		[Display(Name = "First Name", ShortName = "First", Description = "The person's first/given name.")]
 		public string First {
 			get => _first;
@@ -49,6 +51,7 @@ namespace XRD.LibCat.Models.Abstract {
 
 		private string _last;
 		[StringLength(50)]
+		[Required]
 		[Display(Name = "Last Name", ShortName = "Last", Description = "The person's last/family name")]
 		public string Last {
 			get => _last;
@@ -74,6 +77,15 @@ namespace XRD.LibCat.Models.Abstract {
 		[Display(Name = "Is Deleted?", ShortName = "Obs?", Description = "Has this record been flagged as deleted/obsolete?")]
 		public bool IsDeleted { get; set; }
 		#endregion
+
+		public override List<EntityValidationError> Validate() {
+			List<EntityValidationError> res = new List<EntityValidationError>();
+			if (string.IsNullOrWhiteSpace(First))
+				res.Add(new EntityValidationError(nameof(First), "First (Given) Name is required."));
+			if (string.IsNullOrWhiteSpace(Last))
+				res.Add(new EntityValidationError(nameof(Last), "Last (Family) Name is required."));
+			return res;
+		}
 
 		public PersonName ToPersonName() => new PersonName(First, Last, Prefix, Middle, Suffix, Nickname);
 		public override string ToString() => ToPersonName().ToFullName();

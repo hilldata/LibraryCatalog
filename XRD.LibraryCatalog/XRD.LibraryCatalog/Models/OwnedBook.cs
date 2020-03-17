@@ -19,9 +19,10 @@ namespace XRD.LibCat.Models {
 			IsDeleted = false;
 		}
 
-		public OwnedBook(int bookNumber, CatalogEntry volume) : base(true) {
+		public OwnedBook(int bookNumber, CatalogEntry book) : base(true) {
 			BookNumber = bookNumber;
-			Book = volume ?? throw new ArgumentNullException(nameof(volume));
+			Book = book ?? throw new ArgumentNullException(nameof(book));
+			IsDeleted = false;
 		}
 		#endregion
 
@@ -46,6 +47,13 @@ namespace XRD.LibCat.Models {
 			base.InstantiateCollections();
 
 			BorrowingHistories = new HashSet<BorrowingHistory>();
+		}
+
+		public override List<EntityValidationError> Validate() {
+			List<EntityValidationError> res = new List<EntityValidationError>();
+			if (Book == null && CatId == 0)
+				res.Add(new EntityValidationError(nameof(Book), "No Catalog Entry has been assigned."));
+			return res;
 		}
 
 		public class Config : EntityConfig<OwnedBook> {

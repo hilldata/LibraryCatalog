@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -49,6 +50,8 @@ namespace XRD.LibCat.Models.Abstract {
 		#endregion
 
 		protected virtual void InstantiateCollections() { }
+		public abstract List<EntityValidationError> Validate();
+		public bool IsValid => Validate().IsNullOrEmpty();
 
 		public abstract class EntityConfig<TEntity> : IEntityTypeConfiguration<TEntity> where TEntity : Entity {
 			public virtual void Configure(EntityTypeBuilder<TEntity> builder) {

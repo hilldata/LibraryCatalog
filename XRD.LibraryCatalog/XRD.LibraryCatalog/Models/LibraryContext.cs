@@ -190,13 +190,13 @@ namespace XRD.LibCat.Models {
 			if (authorName.ContainsWildcard()) {
 				return from v
 					   in CatalogEntries
-					   join a in Authors on v.Id equals a.VolId
+					   join a in Authors on v.Id equals a.CatId
 					   where EF.Functions.Like(a.FullName, authorName.ToSqlLikeFilter())
 					   select v;
 			} else {
 				return from v
 					   in CatalogEntries
-					   join a in Authors on v.Id equals a.VolId
+					   join a in Authors on v.Id equals a.CatId
 					   where a.FullName == authorName.Trim()
 					   select v;
 			}

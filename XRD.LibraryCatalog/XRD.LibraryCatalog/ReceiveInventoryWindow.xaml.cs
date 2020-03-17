@@ -30,8 +30,10 @@ namespace XRD.LibCat {
 			googleSearch?.ClearSearch();
 			txtSearchCriteria?.Clear();
 
-			if (tbiLocal != null)
-				tbiLocal.IsSelected=true;
+			if (tbiLocal != null) {
+				tbiLocal.IsSelected = true;
+				tbiLocal.IsEnabled = false;
+			}
 			txtSearchCriteria?.Focus();
 		}
 
@@ -49,16 +51,15 @@ namespace XRD.LibCat {
 			}
 			if (lvwLocal.Items.Count > 0) {
 				tbiLocal.IsSelected = true;
-				lvwLocal.SelectedItem = lvwLocal.Items[0];
+				lvwLocal.SelectedValue = lvwLocal.Items[0];
+				lvwLocal.Focus();
 			} else if (googleSearch.Client.Items.Count > 0) {
 				tbiGoogle.IsSelected = true;
+				googleSearch.Focus();
 			} else {
 				StartManualEntry();
 			}
 			txtSearchCriteria.IsEnabled = true;
-		}
-
-		private void UpdateLocalHeader() {
 		}
 
 		private async void txtSearchCriteria_KeyUp(object sender, KeyEventArgs e) {
@@ -82,13 +83,96 @@ namespace XRD.LibCat {
 			StartManualEntry();
 		}
 
-		private void StartManualEntry() { 
+		private void StartManualEntry() {
+			tbiManual.IsEnabled = true;
 			tbiManual.IsSelected = true;
 			manualEditor.SelCatalogEntry = null;
+			manualEditor.Focus();
+		}
+
+		private async Task<int?> validateBookNumber() {
+			TextBox txt = txtBookNumber;
+			Tuple<string, string> msg = null;
+			if (!int.TryParse(txt.Text, out int val)) {
+				msg = new Tuple<string, string>(
+					$"The value provided for the \"New Copy ID\" [{txt.Text}] is not a valid number.",
+					"Invalid \"New Copy ID\"");
+			} else {
+				var qry = from ob
+						  in _db.OwnedBooks
+						  where ob.BookNumber == val
+						  select ob;
+				if(await qry.AnyAsync()) {
+					msg = new Tuple<string, string>(
+						$"The value provided for the \"New Copy ID\" [{val}] is already in use.",
+						"Duplicate \"Copy ID\"");
+				}
+			}
+			if (msg == null)
+				return val;
+			else {
+				MessageBox.Show(msg.Item1, msg.Item2, MessageBoxButton.OK, MessageBoxImage.Warning);
+				return null;
+			}
 		}
 
 		private async Task AddBookToInventory() {
+			int? bookNum = await validateBookNumber();
+			if(!bookNum.HasValue) {
+				txtBookNumber.SelectAll();
+				txtBookNumber.Focus();
+				return;
+			}
 
+			CatalogEntry entry;
+			if (tbiLocal.IsSelected) {
+				if (lvwLocal.SelectedValue == null || !(lvwLocal.SelectedValue is CatalogEntry catalogEntry))
+					return;
+				entry = catalogEntry;
+			} else if (tbiGoogle.IsSelected) {
+				if (googleSearch.SelectedVolume == null)
+					return;
+				entry = CreateEntryFromGoogle(googleSearch.SelectedVolume);
+			} else if (tbiManual.IsSelected) {
+				if (!manualEditor.Validate())
+					return;
+				entry = manualEditor.SelCatalogEntry;
+			} else
+				return;
+
+		}
+
+		private CatalogEntry CreateEntryFromGoogle(GoogleBooksApi.VolumeInfo source) {
+			List<string> ids = new List<string>();
+			if(!source.IndustryIdentifiers.IsNullOrEmpty()) {
+				foreach (var i in source.IndustryIdentifiers)
+					ids.Add(i.Identifier);
+			}
+			List<string> genres = new List<string>();
+			if(!source.Categories.IsNullOrEmpty()) {
+				foreach (var g in source.Categories)
+					genres.Add(g);
+			}
+			CatalogEntry res = new CatalogEntry(
+				source.Title,
+				source.Subtitle,
+				ids,
+				source.Publisher,
+				source.PublishedDateAsString,
+				source.PageCount,
+				source.Description,
+				txtShelf.Text,
+				ageRestrict.MinAge,
+				ageRestrict.MaxAge,
+				gradeRestrict.MinGrade,
+				gradeRestrict.MaxGrade,
+				genres.ToArray()
+			);
+			if(!source.Authors.IsNullOrEmpty()) {
+				foreach (var a in source.Authors)
+					res.AddAuthor(a);
+			}
+			return res;
 		}
 
 		private async void btnAddCopy_Click(object sender, RoutedEventArgs e) {

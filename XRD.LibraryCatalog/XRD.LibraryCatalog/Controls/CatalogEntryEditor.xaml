@@ -39,7 +39,7 @@
                 <RowDefinition Height="75" x:Name="rowGenres"/>
             </Grid.RowDefinitions>
             <Label Style="{StaticResource RequiredField}" Content="Title:" FontSize="14"/>
-            <TextBox Text="{Binding Title}" MaxLength="1000" FontSize="14"/>
+            <TextBox Text="{Binding Title}" MaxLength="1000" FontSize="14" Name="txtTitle"/>
             <Label Grid.Row="1" Content="Subtitle:"/>
             <TextBox Grid.Row="1" Text="{Binding Subtitle}" MaxLength="1000"/>
             <Label Grid.Row="2" Content="Author(s):"/>
@@ -90,19 +90,34 @@
                     <ListView Grid.Column="2" Grid.RowSpan="5" x:Name="lvwAuthors" SelectionMode="Single" KeyUp="lvwAuthors_KeyUp" ItemsSource="{Binding Authors}" Margin="2">
                         <ListView.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Name="mnuDelAuth" Header="Delete Author" ToolTip="Delete the selected author." Click="btnDelAuthor_Click"
-                                          Style="{StaticResource Mdl2MenuItem}"
-                                          ctrl:Mdl2AssetProperty.Mdl2Brush="Red"
-                                          ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Remove}"
-                                          IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:NullableToEnabledConverter}}"/>
-                                <MenuItem Name="mnuMoveAuthUp" Header="Move Author Up" ToolTip="Move the selected author up in the list." Click="btnMoveAuthUp_Click"
-                                          Style="{StaticResource Mdl2MenuItem}"
-                                          IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:CanMoveUpConverter}}"
-                                          ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Up}"/>
-                                <MenuItem Name="mnuMoveAuthDown" Header="Move Author Down" ToolTip="Move the selected author down in the list." Click="btnMoveAuthDown_Click"
-                                          Style="{StaticResource Mdl2MenuItem}"
-                                          IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:CanMoveDownConverter}, ConverterParameter=ItemsSource}"
-                                          ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Down}"/>
+                                <MenuItem Name="mnuDelAuth" ToolTip="Delete the selected author." Click="btnDelAuthor_Click"
+                                          IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:NullableToEnabledConverter}}">
+                                    <MenuItem.Header>
+                                        <StackPanel Style="{StaticResource MenuItemHeaderStackPanel}">
+                                            <TextBlock Style="{StaticResource Mdl2Text}" ctrl:Mdl2AssetProperty.Mdl2Brush="Red" ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Remove}" />
+                                            <TextBlock Text="Delete" Margin="6,0,0,0"/>
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                                <Separator/>
+                                <MenuItem Name="mnuMoveAuthUp" ToolTip="Move the selected author up in the list." Click="btnMoveAuthUp_Click"
+                                          IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:CanMoveUpConverter}}">
+                                    <MenuItem.Header>
+                                        <StackPanel Style="{StaticResource MenuItemHeaderStackPanel}">
+                                            <TextBlock Style="{StaticResource Mdl2Text}" ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Up}"/>
+                                            <TextBlock Text="Move Up" Margin="6,0,0,0"/>
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                                <MenuItem Name="mnuMoveAuthDown" ToolTip="Move the selected author down in the list." Click="btnMoveAuthDown_Click"
+                                          IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:CanMoveDownConverter}, ConverterParameter=ItemsSource}">
+                                    <MenuItem.Header>
+                                        <StackPanel Style="{StaticResource MenuItemHeaderStackPanel}">
+                                            <TextBlock Style="{StaticResource Mdl2Text}" ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Down}"/>
+                                            <TextBlock Text="Move Down" Margin="6,0,0,0"/>
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
                             </ContextMenu>
                         </ListView.ContextMenu>
                         <ListView.View>
@@ -151,11 +166,15 @@
                     <ListView Grid.Column="2" Grid.RowSpan="3" x:Name="lvwIsbn" SelectionMode="Single" ItemsSource="{Binding Identifiers}" Margin="2" DisplayMemberPath="Value" KeyUp="lvwIsbn_KeyUp">
                         <ListView.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Name="mnuDelIsbn" Header="Delete ISBN" ToolTip="Delete the selected ISBN." 
-                                          Style="{StaticResource Mdl2MenuItem}"
-                                          ctrl:Mdl2AssetProperty.Mdl2Brush="Red" Click="btnDelISBN_Click"
-                                          ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Remove}"
-                                          IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:NullableToEnabledConverter}}"/>
+                                <MenuItem Name="mnuDelIsbn" ToolTip="Delete the selected ISBN." 
+                                          IsEnabled="{Binding ElementName=lvwIsbn, Path=SelectedItem, Converter={conv:NullableToEnabledConverter}}">
+                                    <MenuItem.Header>
+                                        <StackPanel Style="{StaticResource MenuItemHeaderStackPanel}">
+                                            <TextBlock Style="{StaticResource Mdl2Text}" ctrl:Mdl2AssetProperty.Mdl2Brush="Red" ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Remove}" />
+                                            <TextBlock Text="Delete" Margin="6,0,0,0"/>
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
                             </ContextMenu>
                         </ListView.ContextMenu>
                     </ListView>
@@ -195,21 +214,26 @@
                                 Style="{StaticResource Mdl2Button}"
                                 ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Add}"
                                 ctrl:Mdl2AssetProperty.Mdl2Brush="Green"
-                                IsEnabled="{Binding ElementName=txtNewIsbn, Path=Text, Converter={conv:StringToEnabledConverter}}"/>
+                                IsEnabled="{Binding ElementName=txtNewGenre, Path=Text, Converter={conv:StringToEnabledConverter}}"/>
                         <Button x:Name="btnDelGenre" ToolTip="Delete the selected Genre." Click="btnDelGenre_Click"
                                 Style="{StaticResource Mdl2Button}"
                                 ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Remove}"
                                 ctrl:Mdl2AssetProperty.Mdl2Brush="Red"
-                                IsEnabled="{Binding ElementName=lvwIsbn, Path=SelectedItem, Converter={conv:NullableToEnabledConverter}}"/>
+                                IsEnabled="{Binding ElementName=lvwGenre, Path=SelectedItem, Converter={conv:NullableToEnabledConverter}}"/>
                     </StackPanel>
                     <ListView Grid.Column="2" Grid.RowSpan="3" x:Name="lvwGenre" SelectionMode="Single" ItemsSource="{Binding Genres}" Margin="2" DisplayMemberPath="Value" KeyUp="lvwGenre_KeyUp" >
                         <ListView.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Name="mnuDelGenre" Header="Delete Genre" ToolTip="Delete the selected Genre."
-                                          Style="{StaticResource Mdl2MenuItem}" Click="btnDelGenre_Click"
-                                          ctrl:Mdl2AssetProperty.Mdl2Brush="Red"
-                                          ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Remove}"
-                                          IsEnabled="{Binding ElementName=lvwAuthors, Path=SelectedItem, Converter={conv:NullableToEnabledConverter}}"/>
+                                <MenuItem Name="mnuDelGenre" ToolTip="Delete the selected Genre."
+                                          Click="btnDelGenre_Click"
+                                          IsEnabled="{Binding ElementName=lvwGenre, Path=SelectedItem, Converter={conv:NullableToEnabledConverter}}">
+                                    <MenuItem.Header>
+                                        <StackPanel Style="{StaticResource MenuItemHeaderStackPanel}">
+                                            <TextBlock Style="{StaticResource Mdl2Text}" ctrl:Mdl2AssetProperty.Mdl2Brush="Red" ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Remove}" />
+                                            <TextBlock Text="Delete" Margin="6,0,0,0"/>
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
                             </ContextMenu>
                         </ListView.ContextMenu>
                     </ListView>

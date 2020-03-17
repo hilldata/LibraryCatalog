@@ -124,6 +124,16 @@ namespace XRD.LibCat.Models {
 			OwnedBooks = new HashSet<OwnedBook>();
 			Genres = new HashSet<Genre>();
 		}
+		public override List<EntityValidationError> Validate() {
+			List<EntityValidationError> res = new List<EntityValidationError>();
+			if (string.IsNullOrWhiteSpace(Title))
+				res.Add(new EntityValidationError(nameof(Title), "Title is required."));
+			if(!string.IsNullOrWhiteSpace(PubDate)) {
+				if (PubDate.Length > 100)
+					PubDate = PubDate.Truncate(100);
+			}
+			return res;
+		}
 
 		internal class Config : EntityConfig<CatalogEntry> {
 			public override void Configure(EntityTypeBuilder<CatalogEntry> builder) {
@@ -131,7 +141,7 @@ namespace XRD.LibCat.Models {
 
 				builder.HasMany(b => b.Authors)
 					.WithOne(a => a.Book)
-					.HasForeignKey(a => a.VolId)
+					.HasForeignKey(a => a.CatId)
 					.HasPrincipalKey(b => b.Id)
 					.OnDelete(DeleteBehavior.Restrict);
 

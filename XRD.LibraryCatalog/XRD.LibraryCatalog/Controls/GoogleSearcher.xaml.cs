@@ -77,5 +77,8 @@ namespace XRD.LibCat.Controls {
 				_navigating = false;
 			}
 		}
+
+		public VolumeInfo SelectedVolume =>
+			lvw.SelectedValue != null ? lvw.SelectedValue as VolumeInfo : null;
 	}
 }

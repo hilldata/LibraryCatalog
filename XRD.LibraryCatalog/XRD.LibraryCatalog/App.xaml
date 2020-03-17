@@ -6,6 +6,7 @@
              xmlns:ctrl="clr-namespace:XRD.LibCat.Controls"
              xmlns:conv="clr-namespace:XRD.LibCat.Converters"
              xmlns:mod="clr-namespace:XRD.LibCat.Models"
+             
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <Style TargetType="ToolBar">
@@ -101,16 +102,23 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="Mdl2MenuItem" TargetType="MenuItem">
-            <Setter Property="Icon">
-                <Setter.Value>
-                    <TextBlock Text="{Binding Path=(ctrl:Mdl2AssetProperty.Mdl2Icon), RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Converter={conv:CharToStringConverter}}"
-                               Foreground="{Binding Path=(ctrl:Mdl2AssetProperty.Mdl2Brush)}"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="IsCheckable" Value="False"/>
+
+        <ItemsPanelTemplate x:Key="MenuItemPanelTemplate">
+            <StackPanel Orientation="Vertical" Background="{x:Static SystemColors.MenuBrush}"/>
+        </ItemsPanelTemplate>
+        
+        <Style TargetType="{x:Type MenuItem}">
+            <Setter Property="ItemsPanel" Value="{StaticResource MenuItemPanelTemplate}"/>
         </Style>
 
+        <Style TargetType="{x:Type ContextMenu}">
+            <Setter Property="ItemsPanel" Value="{StaticResource MenuItemPanelTemplate}"/>
+        </Style>
+        <Style TargetType="{x:Type StackPanel}" x:Key="MenuItemHeaderStackPanel">
+            <Setter Property="Orientation" Value="Horizontal"/>
+            <Setter Property="Margin" Value="-30,0,-40,0"/>
+        </Style>
+        
         <DataTemplate DataType="{x:Type mod:CatalogEntry }" x:Key="catEntryItemTemplate">
             <DataTemplate.Resources>
                 <Style TargetType="TextBlock">

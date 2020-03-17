@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -30,6 +31,15 @@ namespace XRD.LibCat.Models {
 		#region Navigation Properties
 		public virtual CatalogEntry Book { get; set; }
 		#endregion
+
+		public override List<EntityValidationError> Validate() {
+			List<EntityValidationError> res = new List<EntityValidationError>();
+			if (string.IsNullOrWhiteSpace(Value))
+				res.Add(new EntityValidationError(nameof(Value), "Identifier Value is required."));
+			if (Book == null && CatId == 0)
+				res.Add(new EntityValidationError(nameof(Book), "No Catalog Entry has been assigned."));
+			return res;
+		}
 
 		public class Config : EntityConfig<Identifier> {
 			public override void Configure(EntityTypeBuilder<Identifier> builder) {

@@ -31,11 +31,9 @@ namespace XRD.LibCat.Controls {
 			if (d is CatalogEntryEditor editor) {
 				editor.Resources["selEntry"] = e.NewValue;
 				editor.SelCatalogEntry.PropertyChanged += editor.SelCatalogEntry_PropertyChanged;
+				if(editor.txtTitle != null)
+					editor.txtTitle.Focus();
 			}
-		}
-
-		private static void CatalogEntryEditor_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-			var cont = sender;
 		}
 
 		public Models.CatalogEntry SelCatalogEntry {
@@ -45,6 +43,18 @@ namespace XRD.LibCat.Controls {
 
 		private Models.CatalogEntry _model =>
 			Resources["selEntry"] as Models.CatalogEntry;
+
+		public bool Validate() {
+			var res = _model.Validate();
+			if (res.IsNullOrEmpty())
+				return true;
+
+			App.ShowValidationMessage(res);
+			if (res.Where(a => a.PropertyName == nameof(_model.Title)).Any()) {
+				txtTitle.Focus();
+			}
+			return false;
+		}
 
 		private void SelCatalogEntry_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
 			if (sender is Models.CatalogEntry entry) {

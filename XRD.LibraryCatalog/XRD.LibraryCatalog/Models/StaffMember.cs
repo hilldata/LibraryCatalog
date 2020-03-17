@@ -64,6 +64,7 @@ namespace XRD.LibCat.Models {
 			base.InstantiateCollections();
 			Students = new HashSet<Patron>();
 		}
+		public override List<EntityValidationError> Validate() => base.Validate();
 
 		public class Config : EntityConfig<StaffMember> {
 			public override void Configure(EntityTypeBuilder<StaffMember> builder) {
