@@ -193,7 +193,7 @@ namespace XRD.LibCat.Models {
 				foreach(var g in Genres) {
 					if (sb.Length > 0)
 						sb.Append("; ");
-					sb.Append(g);
+					sb.Append(g.Value);
 				}
 				return sb.ToString();
 			}
@@ -209,7 +209,7 @@ namespace XRD.LibCat.Models {
 				foreach (var g in Identifiers) {
 					if (sb.Length > 0)
 						sb.Append("; ");
-					sb.Append(g);
+					sb.Append(g.Value);
 				}
 				return sb.ToString();
 			}

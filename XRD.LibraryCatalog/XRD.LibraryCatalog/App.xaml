@@ -138,6 +138,7 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
                 <Border/>
                 <Label Grid.Row="1" Content="Title"/>
@@ -147,7 +148,9 @@
                 <TextBlock Grid.Row="3" Text="{Binding AuthorDisplay}"/>
                 <Label Grid.Row="4" Content="ISBN(s)"/>
                 <TextBlock Grid.Row="4" Text="{Binding IdentifierDisplay}"/>
-                <Border Grid.Row="5" BorderBrush="Navy" BorderThickness="1" Grid.ColumnSpan="2"/>
+                <Label Grid.Row="5" Content="# Owned"/>
+                <TextBlock Grid.Row="5" Text="{Binding OwnedBooks.Count}"/>
+                <Border Grid.Row="6" BorderBrush="Navy" BorderThickness="1" Grid.ColumnSpan="2"/>
             </Grid>
         </DataTemplate>
 

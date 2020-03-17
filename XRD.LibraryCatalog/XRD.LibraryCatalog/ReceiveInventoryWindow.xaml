@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:conv="clr-namespace:XRD.LibCat.Converters"
         xmlns:local="clr-namespace:XRD.LibCat"
-        mc:Ignorable="d"
+        mc:Ignorable="d" Loaded="Window_Loaded"
         xmlns:ctrl="clr-namespace:XRD.LibCat.Controls"
         Title="Receive Books into Inventory" Height="450" Width="800">
     <DockPanel>
@@ -15,7 +15,7 @@
                 <ComboBoxItem>ISBN</ComboBoxItem>
                 <ComboBoxItem>Title</ComboBoxItem>
             </ComboBox>
-            <TextBox Name="txtSearchCriteria" MinWidth="100" ToolTip="Search Criteria" SpellCheck.IsEnabled="False" KeyUp="txtSearchCriteria_KeyUp" GotFocus="txtBox_GotFocus"/>
+                <TextBox Name="txtSearchCriteria" MinWidth="100" ToolTip="Search Criteria" SpellCheck.IsEnabled="False" KeyUp="txtSearchCriteria_KeyUp" GotFocus="txtBox_GotFocus" />
             <Button Name="btnSearch" ToolTip="Search for Volume Information" Click="btnSearch_Click"
                     IsEnabled="{Binding ElementName=txtSearchCriteria, Path=Text, Converter={conv:StringToEnabledConverter}}" 
                     Style="{StaticResource Mdl2Button}"
@@ -28,11 +28,14 @@
             <Button x:Name="btnAddManually" ToolTip="Manually enter the catalog information." Click="btnAddManually_Click" Content="Manual Entry"
                     Style="{StaticResource Mdl2Button}"
                     ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.KeyboardClassic}"/>
-
+            <Separator/>
+            <Label Content="Highest Copy ID:" FontStyle="Italic" Margin="100,0,0,0" HorizontalAlignment="Right"/>
+            <TextBlock x:Name="txtMaxBookNum" VerticalAlignment="Center"/>
         </ToolBar>
         <Border DockPanel.Dock="Bottom" Style="{StaticResource SectionBorder}">
             <DockPanel>
-                <Label Style="{StaticResource SectionHeader}" Content="New Copy Details" DockPanel.Dock="Top"/>
+                <Label Style="{StaticResource SectionHeader}" DockPanel.Dock="Top" Content="New Copy Details"/>
+
                 <WrapPanel>
                     <GroupBox Header="Age Restrictions" >
                         <ctrl:AgeRestrictControl x:Name="ageRestrict"/>
@@ -41,7 +44,16 @@
                         <ctrl:GradeRestrictControl x:Name="gradeRestrict"/>
                     </GroupBox>
                     <GroupBox Header="Location">
-                        <TextBox MaxLength="150" x:Name="txtShelf" ToolTip="The optional shelf/location where the book should be returned to." KeyUp="txtBookNumber_KeyUp" GotFocus="txtBox_GotFocus"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" MinWidth="50" MaxLength="150" x:Name="txtShelf" ToolTip="The optional shelf/location where the book should be returned to." KeyUp="txtBookNumber_KeyUp" GotFocus="txtBox_GotFocus"/>
+                            <Button x:Name="btnClearShelf" Grid.Column="1" ToolTip="Clear Location" VerticalAlignment="Center" Margin="1" Click="btnClearShelf_Click">
+                                <TextBlock Style="{StaticResource Mdl2Icon}" Text="&#xe711;" Margin="-2"/>
+                            </Button>
+                        </Grid>
                     </GroupBox>
                     <GroupBox>
                         <GroupBox.Header>
@@ -78,7 +90,7 @@
                                    Visibility="{Binding ElementName=lvwLocal, Path=Items.Count, Converter={conv:IntToVisibilityConverter}, ConverterParameter=0}"/>
                     </StackPanel>
                 </TabItem.Header>
-                <ListView x:Name="lvwLocal" ItemTemplate="{StaticResource catEntryItemTemplate}"/>
+                <ListView x:Name="lvwLocal" ItemTemplate="{StaticResource catEntryItemTemplate}" SelectionChanged="lvwLocal_SelectionChanged"/>
             </TabItem>
             <TabItem x:Name="tbiGoogle">
                 <TabItem.Header>

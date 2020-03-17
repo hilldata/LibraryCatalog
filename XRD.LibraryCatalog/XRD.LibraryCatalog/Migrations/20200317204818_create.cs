@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace XRD.LibCat.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class create : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,9 +45,9 @@ namespace XRD.LibCat.Migrations
                     Ts = table.Column<DateTime>(nullable: false),
                     Ec = table.Column<int>(nullable: false),
                     Prefix = table.Column<string>(maxLength: 50, nullable: true),
-                    First = table.Column<string>(maxLength: 50, nullable: true),
+                    First = table.Column<string>(maxLength: 50, nullable: false),
                     Middle = table.Column<string>(maxLength: 50, nullable: true),
-                    Last = table.Column<string>(maxLength: 50, nullable: true),
+                    Last = table.Column<string>(maxLength: 50, nullable: false),
                     Suffix = table.Column<string>(maxLength: 50, nullable: true),
                     Nickname = table.Column<string>(maxLength: 50, nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
@@ -69,7 +69,7 @@ namespace XRD.LibCat.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Uid = table.Column<Guid>(nullable: false),
-                    VolId = table.Column<int>(nullable: false),
+                    CatId = table.Column<int>(nullable: false),
                     FullName = table.Column<string>(maxLength: 400, nullable: true),
                     OrdIndex = table.Column<int>(nullable: false),
                     Role = table.Column<string>(maxLength: 150, nullable: true)
@@ -79,8 +79,8 @@ namespace XRD.LibCat.Migrations
                     table.PrimaryKey("PK_tblAuthors", x => x.Id);
                     table.UniqueConstraint("AK_tblAuthors_Uid", x => x.Uid);
                     table.ForeignKey(
-                        name: "FK_tblAuthors_tblCatalog_VolId",
-                        column: x => x.VolId,
+                        name: "FK_tblAuthors_tblCatalog_CatId",
+                        column: x => x.CatId,
                         principalTable: "tblCatalog",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -164,9 +164,9 @@ namespace XRD.LibCat.Migrations
                     Ts = table.Column<DateTime>(nullable: false),
                     Ec = table.Column<int>(nullable: false),
                     Prefix = table.Column<string>(maxLength: 50, nullable: true),
-                    First = table.Column<string>(maxLength: 50, nullable: true),
+                    First = table.Column<string>(maxLength: 50, nullable: false),
                     Middle = table.Column<string>(maxLength: 50, nullable: true),
-                    Last = table.Column<string>(maxLength: 50, nullable: true),
+                    Last = table.Column<string>(maxLength: 50, nullable: false),
                     Suffix = table.Column<string>(maxLength: 50, nullable: true),
                     Nickname = table.Column<string>(maxLength: 50, nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
@@ -222,15 +222,15 @@ namespace XRD.LibCat.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_tblAuthors_VolId_FullName",
+                name: "IX_tblAuthors_CatId_FullName",
                 table: "tblAuthors",
-                columns: new[] { "VolId", "FullName" },
+                columns: new[] { "CatId", "FullName" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_tblAuthors_VolId_OrdIndex",
+                name: "IX_tblAuthors_CatId_OrdIndex",
                 table: "tblAuthors",
-                columns: new[] { "VolId", "OrdIndex" });
+                columns: new[] { "CatId", "OrdIndex" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblBorrowingHx_PatronId",

@@ -41,7 +41,7 @@ namespace XRD.LibCat.Controls {
 	///     <MyNamespace:AgeRestrictControl/>
 	///
 	/// </summary>
-	[TemplatePart(Name ="PART_btnReset", Type =typeof(Button))]
+	[TemplatePart(Name = "PART_btnReset", Type = typeof(Button))]
 	public class AgeRestrictControl : Control {
 		static AgeRestrictControl() {
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(AgeRestrictControl), new FrameworkPropertyMetadata(typeof(AgeRestrictControl)));
@@ -52,7 +52,7 @@ namespace XRD.LibCat.Controls {
 
 		private void AgeRestrictControl_Loaded(object sender, RoutedEventArgs e) {
 			var btnReset = (Button)Template.FindName("PART_btnReset", this);
-			if(btnReset != null)
+			if (btnReset != null)
 				btnReset.Click += BtnReset_Click;
 		}
 
@@ -66,7 +66,10 @@ namespace XRD.LibCat.Controls {
 			"MinAge",
 			typeof(int?),
 			typeof(AgeRestrictControl),
-			new PropertyMetadata(null));
+			new FrameworkPropertyMetadata(null,
+				FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)
+		);
+
 		public int? MinAge {
 			get => (int?)GetValue(MinAgeProperty);
 			set => SetValue(MinAgeProperty, value);
@@ -78,12 +81,18 @@ namespace XRD.LibCat.Controls {
 			"MaxAge",
 			typeof(int?),
 			typeof(AgeRestrictControl),
-			new PropertyMetadata(null));
+			new FrameworkPropertyMetadata(null, 
+				FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)
+		);
+
 
 		public int? MaxAge {
 			get => (int?)GetValue(MaxAgeProperty);
 			set => SetValue(MaxAgeProperty, value);
 		}
+
+		private static bool hasValue(int? i) =>
+			i.HasValue && i.Value > 0;
 		#endregion
 
 		#region OrientationProperty

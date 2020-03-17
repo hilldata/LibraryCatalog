@@ -9,8 +9,8 @@ using XRD.LibCat.Models;
 namespace XRD.LibCat.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20200310163741_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20200317204818_create")]
+    partial class create
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,6 +22,9 @@ namespace XRD.LibCat.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CatId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("FullName")
@@ -38,17 +41,14 @@ namespace XRD.LibCat.Migrations
                     b.Property<Guid>("Uid")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("VolId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.HasAlternateKey("Uid");
 
-                    b.HasIndex("VolId", "FullName")
+                    b.HasIndex("CatId", "FullName")
                         .IsUnique();
 
-                    b.HasIndex("VolId", "OrdIndex");
+                    b.HasIndex("CatId", "OrdIndex");
 
                     b.ToTable("tblAuthors");
                 });
@@ -254,6 +254,7 @@ namespace XRD.LibCat.Migrations
                         .HasMaxLength(150);
 
                     b.Property<string>("First")
+                        .IsRequired()
                         .HasColumnType("TEXT")
                         .HasMaxLength(50);
 
@@ -264,6 +265,7 @@ namespace XRD.LibCat.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Last")
+                        .IsRequired()
                         .HasColumnType("TEXT")
                         .HasMaxLength(50);
 
@@ -331,6 +333,7 @@ namespace XRD.LibCat.Migrations
                         .HasMaxLength(150);
 
                     b.Property<string>("First")
+                        .IsRequired()
                         .HasColumnType("TEXT")
                         .HasMaxLength(50);
 
@@ -341,6 +344,7 @@ namespace XRD.LibCat.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Last")
+                        .IsRequired()
                         .HasColumnType("TEXT")
                         .HasMaxLength(50);
 
@@ -388,7 +392,7 @@ namespace XRD.LibCat.Migrations
                 {
                     b.HasOne("XRD.LibCat.Models.CatalogEntry", "Book")
                         .WithMany("Authors")
-                        .HasForeignKey("VolId")
+                        .HasForeignKey("CatId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
