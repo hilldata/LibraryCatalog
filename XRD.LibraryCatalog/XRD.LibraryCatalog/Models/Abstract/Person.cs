@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace XRD.LibCat.Models.Abstract {
 	public abstract class Person : ModifiableEntity, ISoftDeleted {
-		protected Person() : base() { }
+		public Person() : base() { }
 		protected Person(bool isNew) : base(isNew) { }
 		protected Person(PersonName personName) : base(true) {
 			Prefix = personName.GetValue(PersonalNameProperties.Prefix);
@@ -85,6 +85,20 @@ namespace XRD.LibCat.Models.Abstract {
 			if (string.IsNullOrWhiteSpace(Last))
 				res.Add(new EntityValidationError(nameof(Last), "Last (Family) Name is required."));
 			return res;
+		}
+
+		public PersonName PersonName {
+			get => new PersonName(First, Last, Prefix, Middle, Suffix, Nickname);
+			set {
+				if (value == null)
+					return;
+				Prefix = value.Prefix;
+				First = value.First;
+				Nickname = value.Nickname;
+				Middle = value.Middle;
+				Last = value.Last;
+				Suffix = value.Suffix;
+			}
 		}
 
 		public PersonName ToPersonName() => new PersonName(First, Last, Prefix, Middle, Suffix, Nickname);

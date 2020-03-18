@@ -8,6 +8,7 @@ namespace XRD.LibCat {
 	/// Structured person's name. Used to parse a text into a structured name.
 	/// </summary>
 	public class PersonName {
+		public PersonName() { }
 		/// <summary>
 		/// Construct an instance of PersonName by parsing the text provided.
 		/// </summary>

@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="XRD.LibCat.Controls.NameEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ctrl="clr-namespace:XRD.LibCat.Controls"
+             xmlns:local="clr-namespace:XRD.LibCat"
+             xmlns:mod="clr-namespace:XRD.LibCat.Models.Abstract"
+             mc:Ignorable="d" Loaded="UserControl_Loaded"
+             d:DesignHeight="350" d:DesignWidth="400">
+    <UserControl.Resources>
+        <Style TargetType="TextBox" BasedOn="{StaticResource txtBoxBase}">
+            <Setter Property="MaxLength" Value="50"/>
+        </Style>
+        <Style TargetType="ComboBox" BasedOn="{StaticResource cmbBase}">
+            <Setter Property="IsEditable" Value="True"/>
+        </Style>
+    </UserControl.Resources>
+    <GroupBox Header="Name">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Label Content="Prefix:"/>
+            <ComboBox Text="{Binding Prefix}" Name="cmbPrefix" ToolTip="Honorifix Prefix (e.g. Ms., Rev., etc.)"/>
+            <Label Grid.Row="1" Content="Last:"/>
+            <TextBox Grid.Row="1" Text="{Binding Last}" ToolTip="Last/Family Name"/>
+            <Label Grid.Row="2" Content="First:"/>
+            <TextBox Grid.Row="2" Text="{Binding First}" ToolTip="First/Given Name"/>
+            <Label Grid.Row="3" Content="Nickname:"/>
+            <TextBox Grid.Row="3" Text="{Binding Nickname}" ToolTip="Nickname"/>
+            <Label Grid.Row="4" Content="Middle:"/>
+            <TextBox Grid.Row="4" Text="{Binding Middle}" ToolTip="Middle Name(s)/Initial(s)"/>
+            <Label Grid.Row="5" Content="Suffix:"/>
+            <ComboBox Grid.Row="5" x:Name="cmbSuffix" Text="{Binding Suffix}" ToolTip="Honorifix Suffix (e.g. MD, Sr., etc.)"/>
+        </Grid>
+    </GroupBox>
+</UserControl>
