@@ -48,6 +48,8 @@ namespace XRD.LibCat.Models {
 
 			BorrowingHistories = new HashSet<BorrowingHistory>();
 		}
+		public override string ToString() =>
+			$"[{BookNumber}]\t{Book}";
 
 		public override List<EntityValidationError> Validate() {
 			List<EntityValidationError> res = new List<EntityValidationError>();

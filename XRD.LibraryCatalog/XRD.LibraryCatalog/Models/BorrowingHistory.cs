@@ -48,6 +48,22 @@ namespace XRD.LibCat.Models {
 		#endregion
 		public override List<EntityValidationError> Validate() => null;
 
+		public override string ToString() {
+			System.Text.StringBuilder sb = new System.Text.StringBuilder();
+			sb.Append($"Checked out:\t{CTime:d}");
+			sb.Append(Environment.NewLine);
+			if(Patron != null) {
+				sb.Append($"\tBy:\t\t{Patron}");
+				sb.Append(Environment.NewLine);
+			}
+			sb.Append($"\tDue:\t\t{DueDate:d}");
+			if(CheckInDate.HasValue) {
+				sb.Append(Environment.NewLine);
+				sb.Append($"\tReturned:\t{CheckInDate:d}");
+			}
+			return sb.ToString();
+		}
+
 		public void CheckIn(DateTime? checkInTime = null) {
 			CheckInDate = checkInTime ?? DateTime.Now;
 		}

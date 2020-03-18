@@ -34,7 +34,7 @@ namespace XRD.LibCat.Controls {
 			"Value",
 			typeof(GradeLevels),
 			typeof(GradesTaught),
-			new FrameworkPropertyMetadata(GradeLevels.NotSet, OnValueChanged));
+			new FrameworkPropertyMetadata(GradeLevels.NotSet, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnValueChanged));
 		private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			if(d is GradesTaught c)
 				c.ApplyValue();

@@ -90,6 +90,15 @@ namespace XRD.LibCat.Models {
 					sb.Append(" ");
 				sb.Append(Last);
 			}
+			if (!string.IsNullOrWhiteSpace(First)) {
+				if (sb.Length > 0) {
+					if (!string.IsNullOrWhiteSpace(Last))
+						sb.Append(", ");
+					else
+						sb.Append(" ");
+				}
+				sb.Append(First);
+			}
 			if (sb.Length > 0)
 				return sb.ToString();
 			else {

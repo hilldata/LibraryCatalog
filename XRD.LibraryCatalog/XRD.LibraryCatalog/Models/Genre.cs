@@ -32,6 +32,8 @@ namespace XRD.LibCat.Models {
 		public virtual CatalogEntry Book { get; set; }
 		#endregion
 
+		public override string ToString() => Value;
+
 		public override List<EntityValidationError> Validate() {
 			List<EntityValidationError> res = new List<EntityValidationError>();
 			if (string.IsNullOrWhiteSpace(Value))

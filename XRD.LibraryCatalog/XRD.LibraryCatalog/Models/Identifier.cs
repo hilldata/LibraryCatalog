@@ -27,6 +27,7 @@ namespace XRD.LibCat.Models {
 		[Display(Name = "Identifier", ShortName = "ISBN", Description = "The identifier (e.g. ISBN) associated with the cataloged item.")]
 		public string Value { get; private set; }
 		#endregion
+		public override string ToString() => Value;
 
 		#region Navigation Properties
 		public virtual CatalogEntry Book { get; set; }
