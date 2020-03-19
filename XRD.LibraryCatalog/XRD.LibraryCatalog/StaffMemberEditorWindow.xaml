@@ -1,0 +1,175 @@
+﻿<ctrl:EntityBoundWindow x:Class="XRD.LibCat.StaffMemberEditorWindow"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:local="clr-namespace:XRD.LibCat"
+                        xmlns:ctrl="clr-namespace:XRD.LibCat.Controls"
+                        xmlns:mod="clr-namespace:XRD.LibCat.Models"
+                        xmlns:conv="clr-namespace:XRD.LibCat.Converters"
+                        mc:Ignorable="d" EntityType="{x:Type mod:StaffMember}"
+                        MinHeight="400" MinWidth="700"
+                        Height="400" Width="400">
+    <TabControl>
+        <TabItem Name="tbiGeneral">
+            <TabItem.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource Mdl2Text}"
+                               ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Contact}"/>
+                    <TextBlock Text=" General Information"/>
+                </StackPanel>
+            </TabItem.Header>
+            <StackPanel Orientation="Vertical">
+                <ctrl:NameEditor x:Name="editName"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Room:"/>
+                    <TextBox Text="{Binding Room}" MaxLength="50"/>
+                    <Label Grid.Row="1" Content="Email:"/>
+                    <TextBox Grid.Row="1" Text="{Binding Email}" MaxLength="150"/>
+                </Grid>
+            </StackPanel>
+        </TabItem>
+        <TabItem Name="tbiTeacher">
+            <TabItem.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource Mdl2Text}"
+                               ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.ContactInfo}"/>
+                    <TextBlock Text=" Teacher-Specific"/>
+                </StackPanel>
+            </TabItem.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <ctrl:GradesTaught />
+                <GroupBox Header="Subject(s) Taught" Grid.Row="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="txtNewSubject" Grid.Column="0" VerticalAlignment="Top"
+                                 MaxLength="50" KeyUp="txtNewSubject_KeyUp"
+                                 ToolTip="The new subject to be added."/>
+                        <ListBox Grid.Column="2" Name="lbxSubjects" ItemsSource="{Binding Subjects}" Margin="2" KeyUp="lbxSubjects_KeyUp"/>
+                        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="2">
+                            <Button Style="{StaticResource Mdl2Button}"
+                                    Name="btnAddSubj" Click="btnAddSubj_Click"
+                                    ToolTip="Add new subject."
+                                    IsEnabled="{Binding ElementName=txtNewSubject, Path=Text, Converter={conv:StringToEnabledConverter}}"
+                                    ctrl:Mdl2AssetProperty.Mdl2Brush="Green"
+                                    ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Add}"/>
+                            <Button Style="{StaticResource Mdl2Button}"
+                                    Name="btnRemSubj" Click="btnRemSubj_Click"
+                                    ToolTip="Remove the selected subject."
+                                    ctrl:Mdl2AssetProperty.Mdl2Brush="Red"
+                                    IsEnabled="{Binding ElementName=lbxSubjects, Path=SelectedValue, Converter={conv:NullableToEnabledConverter}}"
+                                    ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Remove}"/>
+                        </StackPanel>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </TabItem>
+        <TabItem Name="tbiStudents">
+            <TabItem.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource Mdl2Text}" ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Group}"/>
+                    <TextBlock Text="Students"/>
+                </StackPanel>
+            </TabItem.Header>
+            <Grid>
+                <Grid.Resources>
+                    <Style TargetType="ListBox">
+                        <Setter Property="Margin" Value="2,0,2,0"/>
+                        <Setter Property="Grid.Row" Value="1"/>
+                        <Setter Property="Grid.ColumnSpan" Value="2"/>
+                        <Setter Property="SelectionMode" Value="Single"/>
+                    </Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Margin" Value="2,0,2,0"/>
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="26"/>
+                    <ColumnDefinition Width="26"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="26"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Button x:Name="btnRefreshAvail" HorizontalContentAlignment="Left"
+                                    Style="{StaticResource Mdl2Button}"
+                                    Content=" Available Students "
+                                   Margin="2,0,0,0" Click="btnRefreshAvail_Click"
+                                    ToolTip="Refresh available students"
+                                    ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Refresh}"/>
+                <ToggleButton x:Name="btnFilterAvail" Grid.Column="1" Margin="0,0,2,0"
+                                          Style="{StaticResource Mdl2Toggle}"
+                                          ToolTip="Filter students by grades taught" Click="btnFilterAvail_Click"
+                                          ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Filter}"/>
+                <ListBox x:Name="lbxAvailStudents"
+                                 MouseDoubleClick="lbxAvailStudents_MouseDoubleClick"
+                                 KeyUp="lbxAvailStudents_KeyUp"
+                                 ToolTip="Available Students"/>
+                <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">
+                    <Button x:Name="btnAddAllStudents"
+                                    Style="{StaticResource Mdl2Button}"
+                                    ToolTip="Add all available students."
+                                    Click="btnAddAllStudents_Click"
+                                    ctrl:Mdl2AssetProperty.Mdl2Brush="Green"
+                                    IsEnabled="{Binding ElementName=lbxAvailStudents, Path=Items, Converter={conv:NullableToEnabledConverter}}"
+                                    ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.ImportAllMirrored}"/>
+                    <Button x:Name="btnAddSelStudent"
+                                    Style="{StaticResource Mdl2Button}"
+                                    Click="btnAddSelStudent_Click"
+                                    ToolTip="Add selected student."
+                                    IsEnabled="{Binding ElementName=lbxAvailStudents, Path=SelectedValue, Converter={conv:NullableToEnabledConverter}}"
+                                    ctrl:Mdl2AssetProperty.Mdl2Brush="Green"
+                                    ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Export}"/>
+                    <Separator/>
+                    <Button x:Name="btnRemSelStudent"
+                                    Style="{StaticResource Mdl2Button}"
+                                    ToolTip="Remove selected student."
+                                    Click="btnRemSelStudent_Click"
+                                    IsEnabled="{Binding ElementName=lbxAssignStudents, Path=SelectedValue, Converter={conv:NullableToEnabledConverter}}"
+                                    ctrl:Mdl2AssetProperty.Mdl2Brush="Red"
+                                    ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Import}"/>
+                    <Button x:Name="btnRemAllStudents"
+                                    Style="{StaticResource Mdl2Button}"
+                                    ToolTip="Remove all assigned students."
+                                    Click="btnRemAllStudents_Click"
+                                    IsEnabled="{Binding ElementName=lbxAssignStudents, Path=Items, Converter={conv:NullableToEnabledConverter}}"
+                                    ctrl:Mdl2AssetProperty.Mdl2Brush="Red"
+                                    ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.ImportAll}"/>
+                </StackPanel>
+                <Button x:Name="btnRefreshAssignStudents" Grid.Column="3" Grid.ColumnSpan="2"
+                                Grid.Row="0"
+                                Click="btnRefreshAssignStudents_Click"
+                                Margin="2,0,2,0"
+                                Content=" Assigned Students"
+                                HorizontalContentAlignment="Left"
+                                Style="{StaticResource Mdl2Button}"
+                                ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Refresh}"
+                                ToolTip="Refresh assigned students"/>
+                <ListBox x:Name="lbxAssignStudents" Grid.Row="1" Grid.Column="3" MouseDoubleClick="lbxAssignStudents_MouseDoubleClick" KeyUp="lbxAssignStudents_KeyUp"/>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</ctrl:EntityBoundWindow>

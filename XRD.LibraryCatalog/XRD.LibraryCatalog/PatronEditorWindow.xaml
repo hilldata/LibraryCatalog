@@ -1,0 +1,39 @@
+﻿<ctrl:EntityBoundWindow x:Class="XRD.LibCat.PatronEditorWindow"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:ctrl="clr-namespace:XRD.LibCat.Controls"
+                        xmlns:mod="clr-namespace:XRD.LibCat.Models"
+                        xmlns:local="clr-namespace:XRD.LibCat"
+                        mc:Ignorable="d" 
+                        EntityType="{x:Type mod:Patron}"
+                        Title="Patron" Height="450" Width="800">
+    <TabControl>
+        <TabItem Name="tbiGeneral">
+            <TabItem.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource Mdl2Text}" ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Contact2}"/>
+                    <TextBlock Text="General"/>
+                </StackPanel>
+            </TabItem.Header>
+            <StackPanel>
+                <ctrl:NameEditor x:Name="editName"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                </Grid>
+            </StackPanel>
+        </TabItem>
+
+    </TabControl>
+</ctrl:EntityBoundWindow>

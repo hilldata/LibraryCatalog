@@ -14,6 +14,7 @@ namespace XRD.LibCat.Models {
 		#region Constructors
 		public Patron() : base() { }
 
+		public Patron(bool isNew) : base(isNew) { }
 		public Patron(string text) : base(text) { }
 
 		public Patron(PersonName personName) : base(personName) { }
@@ -22,8 +23,12 @@ namespace XRD.LibCat.Models {
 		#endregion
 
 		#region DB Columns
+		[Display(Name ="Date of Birth", ShortName ="DOB", Description ="The patron's date of birth.")]
+		public DateTime? DateOfBirth { get; set; }
+
+		[NotMapped]
 		[Display(Name = "Current Age", ShortName = "Curr. Age", Description = "The patron's current age.")]
-		public int? Age { get; set; }
+		public int? Age => DateOfBirth.HasValue ? (int)((DateTime.Now - DateOfBirth.Value).Days / 365.25) : (int?)null;
 
 		[Display(Name = "Current Grade Level", ShortName = "Curr. Grade", Description = "The patron's current grade level.")]
 		public GradeLevels Grade { get; set; } = GradeLevels.NotSet;

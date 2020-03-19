@@ -69,6 +69,7 @@
         </Style>
         
         <Style x:Key="Mdl2Button" TargetType="Button">
+            <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="ContentTemplate">
                 <Setter.Value>
                     <DataTemplate>
@@ -84,6 +85,7 @@
             </Setter>
         </Style>
         <Style x:Key="Mdl2Toggle" TargetType="ToggleButton">
+            <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="ContentTemplate">
                 <Setter.Value>
                     <DataTemplate>
@@ -120,38 +122,54 @@
         </Style>
         
         <DataTemplate DataType="{x:Type mod:CatalogEntry }" x:Key="catEntryItemTemplate">
-            <DataTemplate.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="Grid.Column" Value="1"/>
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                </Style>
-            </DataTemplate.Resources>
-            <Grid VerticalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <Border/>
-                <Label Grid.Row="1" Content="Title"/>
-                <TextBlock Grid.Row="1" FontSize="14" Text="{Binding Title}"/>
-                <TextBlock Grid.Row="2" Text="{Binding Subtitle}" Name="txtSubtitle" Visibility="{Binding ElementName=txtSubtitle, Path=Text, Converter={conv:StringToVisibilityConverter}}"/>
-                <Label Grid.Row="3" Content="Author(s)"/>
-                <TextBlock Grid.Row="3" Text="{Binding AuthorDisplay}"/>
-                <Label Grid.Row="4" Content="ISBN(s)"/>
-                <TextBlock Grid.Row="4" Text="{Binding IdentifierDisplay}"/>
-                <Label Grid.Row="5" Content="# Owned"/>
-                <TextBlock Grid.Row="5" Text="{Binding OwnedBooks.Count}"/>
-                <Border Grid.Row="6" BorderBrush="Navy" BorderThickness="1" Grid.ColumnSpan="2"/>
-            </Grid>
+            <Border BorderBrush="LightBlue" BorderThickness="1">
+                <Grid DataContext="{Binding}" HorizontalAlignment="Stretch">
+                    <Grid.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="Grid.ColumnSpan" Value="3"/>
+                        </Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Grid.Column" Value="1"/>
+                            <Setter Property="TextWrapping" Value="Wrap"/>
+                            <Setter Property="MaxWidth" Value="600"/>
+                            <Setter Property="Margin" Value="0"/>
+                        </Style>
+                        <Style TargetType="Label">
+                            <Setter Property="FontStyle" Value="Italic"/>
+                            <Setter Property="Grid.Column" Value="0"/>
+                            <Setter Property="Foreground" Value="{x:Static SystemColors.GrayTextBrush}"/>
+                            <Setter Property="Margin" Value="0,1,6,1"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="600"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Content="Title" />
+                    <TextBlock Grid.Row="0" FontSize="14" Text="{Binding Title}"/>
+                    <TextBlock Grid.Row="1" Text="{Binding Subtitle}" Name="txtSubtitle" Visibility="{Binding ElementName=txtSubtitle, Path=Text, Converter={conv:StringToVisibilityConverter}}"/>
+                    <Label Grid.Row="2" Content="Author(s)"/>
+                    <TextBlock Grid.Row="2" Text="{Binding AuthorDisplay}"/>
+                    <Label Grid.Row="3" Content="ISBN(s)"/>
+                    <TextBlock Grid.Row="3" Text="{Binding IdentifierDisplay}"/>
+                    <Label Grid.Row="4" Content="# Owned"/>
+                    <TextBlock Grid.Row="4" Text="{Binding OwnedBooks.Count}"/>
+
+                    <TextBlock Grid.RowSpan="5" Grid.Column="2" FontStyle="Italic" Margin="12,1,1,1" Text="{Binding Description}" VerticalAlignment="Stretch" Background="Ivory"/>
+                </Grid>
+            </Border>
         </DataTemplate>
 
     </Application.Resources>

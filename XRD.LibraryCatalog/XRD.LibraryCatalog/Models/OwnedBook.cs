@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace XRD.LibCat.Models {
-	[Description("Owned Copy of Book")]
+	[Description("Owned Copy of Media")]
 	[Table("tblOwnedBooks")]
 	public class OwnedBook : Abstract.Entity, ISoftDeleted {
 		#region Constructors

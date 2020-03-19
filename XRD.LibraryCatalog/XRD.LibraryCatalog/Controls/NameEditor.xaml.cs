@@ -11,11 +11,14 @@ namespace XRD.LibCat.Controls {
 			InitializeComponent();
 		}
 
+		public void SetFocusFirst() => txtFirst.Focus();
+		public void SetFocusLast() => txtLast.Focus();
+		public void SetFocusPrefix() => cmbPrefix.Focus();
+
 		private void UserControl_Loaded(object sender, RoutedEventArgs e) {
 			cmbPrefix.ItemsSource = Honorifics.GetAll();
 			cmbSuffix.ItemsSource = CommonSuffices;
 		}
-
 		public static List<string> CommonSuffices =>
 			new List<string>() {
 				"Jr.",

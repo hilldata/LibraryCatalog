@@ -33,9 +33,9 @@
             <Label Content="Prefix:"/>
             <ComboBox Text="{Binding Prefix}" Name="cmbPrefix" ToolTip="Honorifix Prefix (e.g. Ms., Rev., etc.)"/>
             <Label Grid.Row="1" Content="Last:"/>
-            <TextBox Grid.Row="1" Text="{Binding Last}" ToolTip="Last/Family Name"/>
+            <TextBox Grid.Row="1" Text="{Binding Last}" ToolTip="Last/Family Name" Name="txtLast"/>
             <Label Grid.Row="2" Content="First:"/>
-            <TextBox Grid.Row="2" Text="{Binding First}" ToolTip="First/Given Name"/>
+            <TextBox Grid.Row="2" Text="{Binding First}" ToolTip="First/Given Name" Name="txtFirst"/>
             <Label Grid.Row="3" Content="Nickname:"/>
             <TextBox Grid.Row="3" Text="{Binding Nickname}" ToolTip="Nickname"/>
             <Label Grid.Row="4" Content="Middle:"/>

@@ -87,6 +87,7 @@ namespace XRD.LibCat.Models.Abstract {
 			return res;
 		}
 
+		[System.ComponentModel.DataAnnotations.Schema.NotMapped]
 		public PersonName PersonName {
 			get => new PersonName(First, Last, Prefix, Middle, Suffix, Nickname);
 			set {

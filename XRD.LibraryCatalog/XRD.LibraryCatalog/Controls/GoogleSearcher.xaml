@@ -15,11 +15,6 @@
             <Border BorderBrush="LightBlue" BorderThickness="1">
                 <Grid DataContext="{Binding}" HorizontalAlignment="Stretch">
                     <Grid.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}"/>
-                            <Setter Property="BorderThickness" Value="1"/>
-                            <Setter Property="Grid.ColumnSpan" Value="3"/>
-                        </Style>
                         <Style TargetType="TextBlock">
                             <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="Grid.Column" Value="1"/>

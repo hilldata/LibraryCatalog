@@ -9,7 +9,7 @@ using XRD.LibCat.Models;
 namespace XRD.LibCat.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20200317204818_create")]
+    [Migration("20200318172027_create")]
     partial class create
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -243,8 +243,8 @@ namespace XRD.LibCat.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("Age")
-                        .HasColumnType("INTEGER");
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Ec")
                         .HasColumnType("INTEGER");

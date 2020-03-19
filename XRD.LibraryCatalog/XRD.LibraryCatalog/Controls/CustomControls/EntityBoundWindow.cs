@@ -49,20 +49,32 @@ namespace XRD.LibCat.Controls {
 	[TemplatePart(Name = SAVE_NEW_BUTTON, Type = typeof(Button))]
 	[TemplatePart(Name = SAVE_CLOSE_BUTTON, Type = typeof(Button))]
 	[TemplatePart(Name = CANCEL_BUTTON, Type = typeof(Button))]
-	[TemplatePart(Name = ISDEL_SBAR_ITEM, Type = typeof(StatusBarItem))]
-	[TemplatePart(Name = DELETE_TOGGLE_BUTTON, Type = typeof(ToggleButton))]
-	[TemplatePart(Name = LASTSAVE_SBAR_ITEM, Type = typeof(StatusBarItem))]
-	[TemplatePart(Name = EDITCOUNT_SBAR_ITEM, Type = typeof(StatusBarItem))]
-	[TemplatePart(Name =CONTENT, Type =typeof(ContentPresenter))]
-	[TemplatePart(Name =PROGRESS_BAR, Type =typeof(ProgressBar))]
+	[TemplatePart(Name = CONTENT, Type = typeof(ContentPresenter))]
+	[TemplatePart(Name = RELOAD_BUTTON, Type =typeof(Button))]
 	public abstract class EntityBoundWindow : Window {
 		#region Protected Members
-		protected readonly LibraryContext _db = App.DbContext;
+		protected LibraryContext _db = App.DbContext;
 		protected bool _isCancel = false;
 
 		protected abstract bool ValidateRecord();
 		protected abstract IEntity CreateNewRecord();
 		protected abstract IQueryable<IEntity> Query { get; }
+		protected virtual void OnEntityChanged() {
+			var sb = (StatusBar)Template.FindName("PART_sbar", this);
+			if (sb != null)
+				sb.DataContext = Entity;
+		}
+		#endregion
+
+		#region Constructors
+		static EntityBoundWindow() {
+			DefaultStyleKeyProperty.OverrideMetadata(typeof(EntityBoundWindow), new FrameworkPropertyMetadata(typeof(EntityBoundWindow)));
+		}
+
+		public EntityBoundWindow() : base() {
+			Closing += EntityBoundWindow_Closing;
+			Loaded += EntityBoundWindow_Loaded;
+		}
 		#endregion
 
 		#region Constants
@@ -70,23 +82,21 @@ namespace XRD.LibCat.Controls {
 		public const string SAVE_NEW_BUTTON = "PART_btnSaveNew";
 		public const string SAVE_CLOSE_BUTTON = "PART_btnSaveClose";
 		public const string CANCEL_BUTTON = "PART_btnCancel";
-		public const string ISDEL_SBAR_ITEM = "PART_sbIsDeleted";
-		public const string LASTSAVE_SBAR_ITEM = "PART_sbTs";
-		public const string EDITCOUNT_SBAR_ITEM = "PART_sbEc";
-		public const string DELETE_TOGGLE_BUTTON = "PART_tglDeleted";
+		public const string RELOAD_BUTTON = "PART_btnReload";
 		public const string CONTENT = "PART_content";
-		public const string PROGRESS_BAR = "PART_pgrBar";
 		#endregion
 
-		#region WindowTitleProperty
-		public static readonly DependencyProperty WindowTitleProperty = DependencyProperty.Register(
-			"WindowTitle",
-			typeof(string),
+		public IEntity Entity { get; private set; }
+
+		#region IsAccessingDbProperty
+		public static readonly DependencyProperty IsAccessingDbProperty = DependencyProperty.Register(
+			"IsAccessingDb",
+			typeof(bool),
 			typeof(EntityBoundWindow),
-			new PropertyMetadata("SomeWindow"));
-		public string WindowTitle {
-			get => (string)GetValue(WindowStyleProperty);
-			private set => SetValue(WindowTitleProperty, value);
+			new PropertyMetadata(false));
+		public bool IsAccessingDb {
+			get => (bool)GetValue(IsAccessingDbProperty);
+			set => SetValue(IsAccessingDbProperty, value);
 		}
 		#endregion
 
@@ -102,106 +112,88 @@ namespace XRD.LibCat.Controls {
 		}
 		private static void OnEntityTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			EntityBoundWindow wind = (EntityBoundWindow)d;
-			wind.updateWindowTitle();
+			wind.updateTitle();
 		}
 		#endregion
+
+		private void setNewEntity() {
+			Entity = CreateNewRecord();
+			_db.Add(Entity);
+			updateTitle();
+		}
 
 		#region EntityIdProperty 
 		public static readonly DependencyProperty EntityIdProperty = DependencyProperty.Register(
 			"EntityId",
 			typeof(int?),
 			typeof(EntityBoundWindow),
-			new FrameworkPropertyMetadata(typeof(IEntity), OnEntityIdChanged));
+			new FrameworkPropertyMetadata(null, OnEntityIdChanged));
 		public int? EntityId {
 			get => (int?)GetValue(EntityIdProperty);
 			set => SetValue(EntityIdProperty, value);
 		}
 		private static async void OnEntityIdChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			EntityBoundWindow wind = (EntityBoundWindow)d;
-			if(wind.EntityId.HasValue) {
-				wind.setDbAccessUI(true);
-				try {
-					wind.Entity = await wind.Query.FirstOrDefaultAsync();
-					if(wind.Entity == null) {
-						string msg = $"No {wind.entityDisplayName} with the specified Id ({wind.EntityId}) was found.{Environment.NewLine}" +
-							$"Do you want to create a new {wind.entityDisplayName}?";
-						if (MessageBox.Show(msg, $"No {wind.entityDisplayName} Found", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes) {
-							wind.Entity = wind.CreateNewRecord();
-						}else {
-							wind._isCancel = true;
-							wind.Close();
-						}
-					}
-				}catch(Exception ex) {
-					throw ex;
-				}finally {
-					wind.setDbAccessUI(false);
-				}
-			}else {
-				wind.Entity = wind.CreateNewRecord();
-			}
-			wind.updateWindowTitle();
-		}
-		#endregion
-
-		#region Constructors
-		static EntityBoundWindow() {
-			DefaultStyleKeyProperty.OverrideMetadata(typeof(EntityBoundWindow), new FrameworkPropertyMetadata(typeof(EntityBoundWindow)));
-		}
-
-		public EntityBoundWindow() : base() {
-			Closing += EntityBoundWindow_Closing;
-			Loaded += EntityBoundWindow_Loaded;
-		}
-		#endregion
-
-		private void updateWindowTitle() {
-			if (EntityType == null) {
-				WindowTitle = "(record type not set)";
+			if(e.NewValue == null || !(e.NewValue is int nId)) {
+				wind.setNewEntity();
 				return;
-			} else if (Entity == null || EntityId == null) {
-				Entity = CreateNewRecord();
-				WindowTitle = $"Add New {entityDisplayName}";
+			}
+			wind.IsAccessingDb = true;
+			try {
+				wind.Entity = await wind.Query.FirstOrDefaultAsync();
+				if(wind.Entity == null) {
+					string msg = $"No {wind.entityDisplayName} with the specified Id ({nId}) was found.{Environment.NewLine}" +
+						$"Do you want to create a new {wind.entityDisplayName}?";
+					if(MessageBox.Show(msg, $"No {wind.entityDisplayName} Found",
+						MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes) {
+						wind.setNewEntity();
+					}else {
+						wind._isCancel = true;
+						wind.Close();
+					}
+				}
+			}catch(Exception ex) {
+				throw ex;
+			}finally {
+				wind.IsAccessingDb = false;
+			}
+			wind.updateTitle();
+		}
+		#endregion
+
+
+		private void updateTitle() {
+			if (EntityType == null) {
+				Title = "(record type not set)";
+			} else if (Entity == null || (EntityId??0)<=0) {
+				Title = $"Add new {entityDisplayName}";
 			} else {
-				WindowTitle = $"{entityDisplayName} [{Entity}]";
+				Title = $"{entityDisplayName} [{Entity}]";
 			}
+			DataContext = Entity;
 		}
 
-		private void setDbAccessUI(bool isAccessing = false) {
-			var prg = (ProgressBar)Template.FindName(PROGRESS_BAR, this);
-			var content = (ContentPresenter)Template.FindName(CONTENT, this);
-
-			if(isAccessing) {
-				if(prg != null)
-					prg.Visibility = Visibility.Visible;
-				if (content != null)
-					content.IsEnabled = false;
-			}else {
-				if (prg != null)
-					prg.Visibility = Visibility.Collapsed;
-				if (content != null)
-					content.IsEnabled = true;
-			}
-		}
 		private string entityDisplayName =>
 			EntityType == null
 			? "(no type set)"
-			: _db.GetDisplayName(EntityType);
+			: LibraryContext.GetDisplayName(EntityType);
 
-		private async System.Threading.Tasks.Task SaveAsync() {
+		private async System.Threading.Tasks.Task<bool> SaveAsync() {
 			if (ValidateRecord()) {
-				setDbAccessUI(true);
+				int i =-1;
+				IsAccessingDb = true;
 				try {
-					await _db.SaveChangesAsync();
+					i = await _db.SaveChangesAsync();
 				} catch (Exception ex) {
-					throw ex;
+					MessageBox.Show(ex.Message, "Save Error", MessageBoxButton.OK, MessageBoxImage.Error);
 				} finally {
-					setDbAccessUI(false);
+					IsAccessingDb = false;
 				}
+				return i > 0;
+			} else {
+				return false;
 			}
 		}
-
-		public IEntity Entity { get; protected set; }
 
 		#region Event Handlers
 		private async void EntityBoundWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
@@ -211,7 +203,7 @@ namespace XRD.LibCat.Controls {
 			}
 
 			if(_db.ChangeTracker.HasChanges()) {
-				string msg = $"There are unsaved changes. Do you want to:{Environment.NewLine}" +
+				string msg = $"There are unsaved changes to this {entityDisplayName}. Do you want to:{Environment.NewLine}" +
 					$"\tSave the changes (\"Yes\"){Environment.NewLine}" +
 					$"\tDiscard the changes (\"No\"){Environment.NewLine}" +
 					$"\tKeep the window open (\"Cancel\")?";
@@ -231,6 +223,10 @@ namespace XRD.LibCat.Controls {
 		}
 
 		private void EntityBoundWindow_Loaded(object sender, RoutedEventArgs e) {
+			if (Entity == null) {
+				setNewEntity();
+			}
+
 			var btnSave = (Button)Template.FindName(SAVE_BUTTON, this);
 			if (btnSave != null)
 				btnSave.Click += BtnSave_Click;
@@ -247,42 +243,24 @@ namespace XRD.LibCat.Controls {
 			if (btnCancel != null)
 				btnCancel.Click += BtnCancel_Click;
 
-			var sbIsDel = (StatusBarItem)Template.FindName(ISDEL_SBAR_ITEM, this);
-			if (sbIsDel != null) {
-				if (typeof(ISoftDeleted).IsAssignableFrom(Entity.GetType()))
-					sbIsDel.Visibility = Visibility.Visible;
-				else
-					sbIsDel.Visibility = Visibility.Collapsed;
-			}
+			var btnReload = (Button)Template.FindName(RELOAD_BUTTON, this);
+			if(btnReload != null)
+				btnReload.Click += BtnReload_Click;
+		}
 
-			var sbTs = (StatusBarItem)Template.FindName(LASTSAVE_SBAR_ITEM, this);
-			var sbEc = (StatusBarItem)Template.FindName(EDITCOUNT_SBAR_ITEM, this);
-			if (typeof(Models.Abstract.ModifiableEntity).IsAssignableFrom(Entity.GetType())) {
-				if (sbTs != null)
-					sbTs.Visibility = Visibility.Visible;
-				if (sbEc != null)
-					sbEc.Visibility = Visibility.Visible;
-			} else {
-				if (sbTs != null)
-					sbTs.Visibility = Visibility.Collapsed;
-				if (sbEc != null)
-					sbEc.Visibility = Visibility.Visible;
-			}
+		private void BtnReload_Click(object sender, RoutedEventArgs e) {
+			_db = App.DbContext;
+			EntityId = EntityId;
 		}
 
 		private void BtnCancel_Click(object sender, RoutedEventArgs e) {
 			_isCancel = true;
-			if(Entity != null) {
-				if (Entity.Id <= 0)
-					_db.Remove(Entity);
-			}else {
-				_db.ChangeTracker.AcceptAllChanges();
-			}
 			Close();
 		}
 
 		private async void BtnSaveClose_Click(object sender, RoutedEventArgs e) {
-			await SaveAsync();
+			if (!await SaveAsync())
+				return;
 			Close();
 		}
 		private async void BtnSaveNew_Click(object sender, RoutedEventArgs e) {

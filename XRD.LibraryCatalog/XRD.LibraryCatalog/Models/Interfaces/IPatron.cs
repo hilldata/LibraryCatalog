@@ -6,7 +6,7 @@
 		/// <summary>
 		/// The Patron's current age
 		/// </summary>
-		int? Age { get; set; }
+		int? Age { get; }
 		/// <summary>
 		/// The Patron's current grade level
 		/// </summary>

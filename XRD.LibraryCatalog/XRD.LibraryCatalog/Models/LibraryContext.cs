@@ -89,7 +89,7 @@ namespace XRD.LibCat.Models {
 		}
 
 		private static readonly Dictionary<Type, string> EntityDisplayNames = new Dictionary<Type, string>();
-		public string GetDisplayName(Type t) {
+		public static string GetDisplayName(Type t) {
 			if (EntityDisplayNames.ContainsKey(t)) {
 				return EntityDisplayNames[t];
 			}
@@ -165,7 +165,7 @@ namespace XRD.LibCat.Models {
 				} else {
 					return from v
 						   in CatalogEntries
-						   where v.Publisher == publisher.TrimTo(1000)
+						   where v.Publisher.Contains(publisher.TrimTo(1000))
 						   select v;
 				}
 			}
@@ -197,7 +197,7 @@ namespace XRD.LibCat.Models {
 				return from v
 					   in CatalogEntries
 					   join a in Authors on v.Id equals a.CatId
-					   where a.FullName == authorName.Trim()
+					   where a.FullName.Contains(authorName.Trim())
 					   select v;
 			}
 		}
@@ -264,8 +264,8 @@ namespace XRD.LibCat.Models {
 				title = title.TrimTo(1000);
 				return from v
 					   in CatalogEntries
-					   where v.Title == title
-					   || v.Subtitle == title
+					   where v.Title.Contains(title)
+					   || v.Subtitle.Contains(title)
 					   select v;
 			}
 		}

@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:XRD.LibCat"
         mc:Ignorable="d" Loaded="Window_Loaded"
         xmlns:ctrl="clr-namespace:XRD.LibCat.Controls"
-        Title="Receive Books into Inventory" Height="450" Width="800">
+        Title="Receive Media into Inventory" Height="450" Width="800">
     <DockPanel>
         <ToolBar>
             <Label Content="Search Field:" Style="{StaticResource RequiredField}"/>
@@ -28,9 +28,6 @@
             <Button x:Name="btnAddManually" ToolTip="Manually enter the catalog information." Click="btnAddManually_Click" Content="Manual Entry"
                     Style="{StaticResource Mdl2Button}"
                     ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.KeyboardClassic}"/>
-            <Separator/>
-            <Label Content="Highest Copy ID:" FontStyle="Italic" Margin="100,0,0,0" HorizontalAlignment="Right"/>
-            <TextBlock x:Name="txtMaxBookNum" VerticalAlignment="Center"/>
         </ToolBar>
         <Border DockPanel.Dock="Bottom" Style="{StaticResource SectionBorder}">
             <DockPanel>
@@ -59,14 +56,20 @@
                         <GroupBox.Header>
                             <TextBlock FontWeight="Bold" Text="New Copy ID"/>
                         </GroupBox.Header>
-                        <TextBox x:Name="txtBookNumber" ToolTip="The number from the barcode inventory control label applied to the book." KeyDown="txtBookNumber_KeyDown" KeyUp="txtBookNumber_KeyUp" VerticalAlignment="Stretch" FontSize="14" GotFocus="txtBox_GotFocus"/>
-                    </GroupBox>
-                    <Button x:Name="btnAddCopy" VerticalAlignment="Center" Margin="2" 
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox x:Name="txtBookNumber" ToolTip="The number from the barcode inventory control label applied to the media copy." KeyDown="txtBookNumber_KeyDown" KeyUp="txtBookNumber_KeyUp" VerticalAlignment="Stretch" FontSize="16" GotFocus="txtBox_GotFocus" MinWidth="70" VerticalContentAlignment="Center"/>
+                            <Button x:Name="btnAddCopy" VerticalAlignment="Center" Margin="2" 
                             Style="{StaticResource Mdl2Button}" ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Add}" 
                             Click="btnAddCopy_Click" IsEnabled="{Binding ElementName=txtBookNumber, Path=Text, Converter={conv:StringToEnabledConverter}}" ctrl:Mdl2AssetProperty.Mdl2Brush="Green"
                             ToolTip="Add the copy to our inventory.">
-                        <TextBlock Margin="2" Text="Add Copy"/>
-                    </Button>
+                                <TextBlock Margin="2" Text="Add Copy"/>
+                            </Button>
+                            <StackPanel>
+                                <TextBlock Text="Highest" FontStyle="Italic" FontSize="8" Foreground="{x:Static SystemColors.GrayTextBrush}"/>
+                                <TextBox x:Name="txtMaxBookNum" VerticalAlignment="Center" IsReadOnly="True" IsTabStop="False" ToolTip="The highest Copy ID in use."/>
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
                 </WrapPanel>
             </DockPanel>
         </Border>

@@ -3,20 +3,60 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:conv="clr-namespace:XRD.LibCat.Converters"
     xmlns:mod="clr-namespace:XRD.LibCat.Models"
+    xmlns:modAbs="clr-namespace:XRD.LibCat.Models.Abstract"
     xmlns:ctrl="clr-namespace:XRD.LibCat.Controls"
     xmlns:local="clr-namespace:XRD.LibCat">
 
     <Style TargetType="TextBlock" x:Key="mdl2">
         <Setter Property="FontFamily" Value="Segoe Mdl2 Assets"/>
-        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontSize" Value="16"/>
         <Setter Property="Padding" Value="0"/>
+    </Style>
+    <Style TargetType="TextBlock" x:Key="mdl2Icon">
+        <Setter Property="FontFamily" Value="Segoe Mdl2 Assets"/>
+        <Setter Property="FontSize" Value="16"/>
     </Style>
 
     <Style TargetType="Button" x:Key="mdl2Button">
         <Setter Property="FontFamily" Value="Segoe Mdl2 Assets"/>
-        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontSize" Value="16"/>
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="2"/>
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource mdl2Icon}"
+                               Text="{Binding Path=(ctrl:Mdl2AssetProperty.Mdl2Icon), RelativeSource={RelativeSource AncestorType={x:Type Button}}, Converter={conv:CharToStringConverter}}"
+                               Opacity="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type Button}}, Converter={conv:IsEnabledToOpacityConverter}}"
+                               Foreground="{Binding Path=(ctrl:Mdl2AssetProperty.Mdl2Brush), RelativeSource={RelativeSource AncestorType={x:Type Button}}}"/>
+                        <ContentPresenter Margin="2,0,0,0" Visibility="{Binding Path=Content, RelativeSource={RelativeSource AncestorType={x:Type Button}}, Converter={conv:NullableToVisibilityConverter}}"
+                            Content="{Binding Path=Content, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ToggleButton" x:Key="mdl2Toggle">
+        <Setter Property="FontFamily" Value="Segoe Mdl2 Assets"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="2"/>
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource mdl2Icon}"
+                               Text="{Binding Path=(ctrl:Mdl2AssetProperty.Mdl2Icon), RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={conv:CharToStringConverter}}"
+                               Opacity="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={conv:IsEnabledToOpacityConverter}}"
+                               Foreground="{Binding Path=(ctrl:Mdl2AssetProperty.Mdl2Brush), RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"/>
+                        <ContentPresenter Margin="2,0,0,0" Visibility="{Binding Path=Content, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={conv:NullableToVisibilityConverter}}"
+                            Content="{Binding Path=Content, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style TargetType="{x:Type ctrl:AgeControl}">
@@ -71,9 +111,9 @@
                     <StackPanel Orientation="{Binding Orientation, RelativeSource={RelativeSource AncestorType={x:Type ctrl:AgeRestrictControl}}}">
                         <ctrl:AgeControl Label="From " Value="{Binding MinAge, RelativeSource={RelativeSource AncestorType={x:Type ctrl:AgeRestrictControl}}, Mode=TwoWay}"/>
                         <ctrl:AgeControl Label=" to " Value="{Binding MaxAge, RelativeSource={RelativeSource AncestorType={x:Type ctrl:AgeRestrictControl}}, Mode=TwoWay}"/>
-                        <Button x:Name="PART_btnReset" ToolTip="Reset to default values." VerticalAlignment="Center">
-                            <TextBlock Style="{StaticResource mdl2}" Text="&#xe711;"/>
-                        </Button>
+                        <Button x:Name="PART_btnReset" ToolTip="Reset to default values." 
+                                VerticalAlignment="Center" Style="{StaticResource mdl2Button}"
+                                ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Clear}"/>
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
@@ -87,9 +127,9 @@
                     <StackPanel Orientation="{Binding Orientation,RelativeSource={RelativeSource AncestorType={x:Type ctrl:GradeRestrictControl}}}">
                         <ctrl:GradeControl Label="From " Value="{Binding MinGrade, RelativeSource={RelativeSource AncestorType={x:Type ctrl:GradeRestrictControl}}, Mode=TwoWay}"/>
                         <ctrl:GradeControl Label=" to " Value="{Binding MaxGrade, RelativeSource={RelativeSource AncestorType={x:Type ctrl:GradeRestrictControl}}, Mode=TwoWay}"/>
-                        <Button x:Name="PART_btnReset" ToolTip="Reset to default values." VerticalAlignment="Center">
-                            <TextBlock Style="{StaticResource mdl2}" Text="&#xe711;"/>
-                        </Button>
+                        <Button x:Name="PART_btnReset" ToolTip="Reset to default values." 
+                                VerticalAlignment="Center" Style="{StaticResource mdl2Button}"
+                                ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Clear}"/>
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
@@ -97,42 +137,42 @@
     </Style>
     
     <Style TargetType="{x:Type ctrl:EntityBoundWindow}">
+        <Setter Property="WindowStyle" Value="ToolWindow"/>
+        <Setter Property="ResizeMode" Value="CanResizeWithGrip"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ctrl:EntityBoundWindow}">
                     <DockPanel Background="{x:Static SystemColors.WindowBrush}">
                         <ToolBar>
-                            <Button x:Name="PART_btnSave" ToolTip="Save any changes.">
-                                <TextBlock Style="{StaticResource mdl2}" Text="&#xe74e;"/>
-                            </Button>
-                            <Button Name="PART_btnSaveNew" ToolTip="Save any changes and create a new record.">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Style="{StaticResource mdl2}" Text="&#xe74e;"/>
-                                    <TextBlock Style="{StaticResource mdl2}" Text="&#xe710;" Foreground="Green" Margin="12,0,0,0"/>
-                                    <TextBlock Grid.Column="1" Text="Save &amp; New"/>
-                                </Grid>
-                            </Button>
-                            <Button x:Name="PART_btnSaveClose" ToolTip="Save any changes and close the window.">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Style="{StaticResource mdl2}" Text="&#xe74e;"/>
-                                    <TextBlock Style="{StaticResource mdl2}" Text="&#xea83;" Margin="9,0,0,0"/>
-                                    <TextBlock Grid.Column="1" Text="Save &amp; Close"/>
-                                </Grid>
-                            </Button>
+                            <Button x:Name="PART_btnSave"
+                                    ToolTip="Save any changes."
+                                    Style="{StaticResource mdl2Button}"
+                                    ctrl:Mdl2AssetProperty.Mdl2Brush="DarkBlue"
+                                    ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Save}"/>
+                            <Button Name="PART_btnSaveNew" 
+                                    ToolTip="{Binding EntityType, RelativeSource={RelativeSource AncestorType={x:Type ctrl:EntityBoundWindow}}, ConverterParameter='Save any changes and create a new {0}', Converter={conv:EntityTypeToToolTipConverter}}"
+                                    Style="{StaticResource mdl2Button}"
+                                    ctrl:Mdl2AssetProperty.Mdl2Brush="DarkGreen"
+                                    ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.SaveCopy}"
+                                    Content="Save &amp; New"/>
+                            <Button x:Name="PART_btnSaveClose" ToolTip="Save any changes and close the window."
+                                    Style="{StaticResource mdl2Button}"
+                                    ctrl:Mdl2AssetProperty.Mdl2Brush="Maroon"
+                                    ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.SaveLocal}"
+                                    Content="Save &amp; Close"/>
                             <Separator/>
-                            <Button x:Name="PART_btnCancel" ToolTip="Discard any changes and close the window.">
-                                <TextBlock Style="{StaticResource mdl2}" Text="&#xe711;"/>
-                            </Button>
+                            <Button x:Name="PART_btnReload"
+                                    ToolTip="{Binding EntityType, RelativeSource={RelativeSource AncestorType={x:Type ctrl:EntityBoundWindow}}, Converter={conv:EntityTypeToToolTipConverter}, ConverterParameter='Discard any changes and reload the {0}.'}"
+                                    Style="{StaticResource mdl2Button}"
+                                    Content="Reload"
+                                    ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.Refresh}"/>
+                            <Button x:Name="PART_btnCancel" ToolTip="Discard any changes and close the window."
+                                    Style="{StaticResource mdl2Button}"
+                                    ctrl:Mdl2AssetProperty.Mdl2Brush="Red"
+                                    Content="Cancel"
+                                    ctrl:Mdl2AssetProperty.Mdl2Icon="{x:Static local:Mdl2Assets.ChromeClose}"/>
                         </ToolBar>
-                        <StatusBar DockPanel.Dock="Bottom">
+                        <StatusBar DockPanel.Dock="Bottom" Name="PART_sbar">
                             <StatusBar.Resources>
                                 <Style TargetType="TextBox">
                                     <Setter Property="IsEnabled" Value="False"/>
@@ -142,43 +182,47 @@
                                     <Setter Property="Orientation" Value="Horizontal"/>
                                 </Style>
                             </StatusBar.Resources>
-                            <StatusBarItem ToolTip="The record's ID (local primary key)">
+                            <StatusBarItem
+                                ToolTip="{Binding EntityType, RelativeSource={RelativeSource AncestorType={x:Type ctrl:EntityBoundWindow}}, Converter={conv:EntityTypeToToolTipConverter}, ConverterParameter='The ID for the {0} (local Primary Key).'}">
                                 <StackPanel>
                                     <TextBlock Text="ID:"/>
                                     <TextBox Text="{Binding Id, Mode=OneWay}"/>
                                 </StackPanel>
                             </StatusBarItem>
-                            <StatusBarItem ToolTip="The date/time the record was created.">
+                            <StatusBarItem ToolTip="{Binding EntityTYpe, RelativeSource={RelativeSource AncestorType={x:Type ctrl:EntityBoundWindow}}, ConverterParameter='The date/time the {0} was created.', Converter={conv:EntityTypeToToolTipConverter}}">
                                 <StackPanel >
                                     <TextBlock Text="Created:"/>
                                     <TextBox Text="{Binding CTime, Mode=OneWay}"/>
                                 </StackPanel>
                             </StatusBarItem>
-                            <StatusBarItem ToolTip="The record's unique ID across domains (globally unique ID)">
+                            <StatusBarItem ToolTip="{Binding EntityType, RelativeSource={RelativeSource AncestorType={x:Type ctrl:EntityBoundWindow}}, ConverterParameter='The unique ID for the {0} across domains (globally unique ID)', Converter={conv:EntityTypeToToolTipConverter}}">
                                 <StackPanel>
                                     <TextBlock Text="UID:"/>
-                                    <TextBox Text="{Binding UID, Mode=OneWay}" IsReadOnly="True" IsEnabled="True"/>
+                                    <TextBox Text="{Binding Uid, Mode=OneWay}" IsReadOnly="True" IsEnabled="True"/>
                                 </StackPanel>
                             </StatusBarItem>
-                            <StatusBarItem Name="PART_sbTs" ToolTip="The date/time the record was last saved.">
+                            <StatusBarItem ToolTip="{Binding EntityType, RelativeSource={RelativeSource AncestorType={x:Type ctrl:EntityBoundWindow}}, ConverterParameter='The date/time the {0} was last saved.', Converter={conv:EntityTypeToToolTipConverter}}"
+                                           Visibility="{Binding EntityType, Converter={conv:EntityTypeToVisibilityConverter}, ConverterParameter={x:Type modAbs:ModifiableEntity}, RelativeSource={RelativeSource AncestorType={x:Type ctrl:EntityBoundWindow}}}">
                                 <StackPanel>
                                     <TextBlock Text="Saved:"/>
-                                    <TextBox Text="{Binding LastSave, Mode=OneWay}"/>
+                                    <TextBox Text="{Binding Ts, Mode=OneWay}"/>
                                 </StackPanel>
                             </StatusBarItem>
-                            <StatusBarItem x:Name="PART_sbEc" ToolTip="The total number of times the record has been edited.">
+                            <StatusBarItem ToolTip="{Binding EntityType, Converter={conv:EntityTypeToToolTipConverter}, RelativeSource={RelativeSource AncestorType={x:Type ctrl:EntityBoundWindow}}, ConverterParameter='The total number of times the {0} has been edited.'}"
+                                           Visibility="{Binding EntityType, Converter={conv:EntityTypeToVisibilityConverter}, ConverterParameter={x:Type modAbs:ModifiableEntity}}">
                                 <StackPanel>
                                     <TextBlock Text="# Edits:"/>
                                     <TextBox Text="{Binding Ec, Mode=OneWay}"/>
                                 </StackPanel>
                             </StatusBarItem>
                             <StatusBarItem>
-                                <ProgressBar Name="PART_prgBar" IsIndeterminate="True" Visibility="Collapsed"/>
+                                <ProgressBar Name="PART_prgBar" IsIndeterminate="True" Visibility="{Binding IsAccessingDb, RelativeSource={RelativeSource AncestorType={x:Type ctrl:EntityBoundWindow}}}" ToolTip="Performing Data Access"/>
                             </StatusBarItem>
-                            <StatusBarItem x:Name="PART_sbIsDeleted" HorizontalAlignment="Right">
+                            <StatusBarItem x:Name="PART_sbIsDeleted" HorizontalAlignment="Right" Margin="0,0,20,0"
+                                           Visibility="{Binding EntityType, RelativeSource={RelativeSource AncestorType={x:Type ctrl:EntityBoundWindow}}, Converter={conv:EntityTypeToVisibilityConverter}, ConverterParameter={x:Type mod:ISoftDeleted}}">
                                 <ToggleButton x:Name="tglIsDeleted" IsChecked="{Binding IsDeleted}" ToolTip="{Binding IsDeleted, Converter={conv:IsDeletedToolTipConverter}}">
                                     <Grid>
-                                        <TextBlock Style="{StaticResource mld2}" Text="&#xe74d;" Foreground="{Binding IsDeleted, Converter={conv:IsDeletedToButtonForegroundConverter} , ConverterParameter={x:Static Brushes.Green}}"/>
+                                        <TextBlock Style="{StaticResource mdl2}" Text="&#xe74d;" Foreground="{Binding IsDeleted, Converter={conv:IsDeletedToButtonForegroundConverter} , ConverterParameter={x:Static Brushes.Green}}"/>
                                         <TextBlock Style="{StaticResource mdl2}" Text="&#xf140;" Visibility="{Binding IsDeleted, Converter={conv:BoolToVisibilityConverter}}"/>
                                     </Grid>
                                 </ToggleButton>

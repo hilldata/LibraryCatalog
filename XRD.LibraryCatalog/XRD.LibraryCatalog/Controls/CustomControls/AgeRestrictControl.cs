@@ -66,7 +66,7 @@ namespace XRD.LibCat.Controls {
 			"MinAge",
 			typeof(int?),
 			typeof(AgeRestrictControl),
-			new FrameworkPropertyMetadata(null,
+			new FrameworkPropertyMetadata(0,
 				FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)
 		);
 
@@ -81,7 +81,7 @@ namespace XRD.LibCat.Controls {
 			"MaxAge",
 			typeof(int?),
 			typeof(AgeRestrictControl),
-			new FrameworkPropertyMetadata(null, 
+			new FrameworkPropertyMetadata(0, 
 				FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)
 		);
 

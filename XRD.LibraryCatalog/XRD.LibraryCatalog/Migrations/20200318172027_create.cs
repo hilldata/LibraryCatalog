@@ -170,7 +170,7 @@ namespace XRD.LibCat.Migrations
                     Suffix = table.Column<string>(maxLength: 50, nullable: true),
                     Nickname = table.Column<string>(maxLength: 50, nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    Age = table.Column<int>(nullable: true),
+                    DateOfBirth = table.Column<DateTime>(nullable: true),
                     Grade = table.Column<long>(nullable: false),
                     MinAge = table.Column<int>(nullable: true),
                     MaxAge = table.Column<int>(nullable: true),

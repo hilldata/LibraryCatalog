@@ -241,8 +241,8 @@ namespace XRD.LibCat.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("Age")
-                        .HasColumnType("INTEGER");
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Ec")
                         .HasColumnType("INTEGER");

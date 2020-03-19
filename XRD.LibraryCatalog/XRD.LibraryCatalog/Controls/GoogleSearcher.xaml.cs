@@ -74,6 +74,8 @@ namespace XRD.LibCat.Controls {
 					tglExactMatch.IsChecked = false;
 					lvw.ItemsSource = client.Items;
 				}
+				if(lvw.Items != null && lvw.Items.Count>0)
+					lvw.SelectedIndex = 0;
 				_navigating = false;
 			}
 		}

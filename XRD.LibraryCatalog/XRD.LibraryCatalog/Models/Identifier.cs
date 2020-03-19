@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace XRD.LibCat.Models {
-	[Description("Identifier")]
+	[Description("ISBN")]
 	[Table("tblIdentifiers")]
 	public class Identifier : Abstract.Entity {
 		public Identifier() : base() { }

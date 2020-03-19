@@ -50,4 +50,22 @@ namespace XRD.LibCat.Converters {
 			};
 		}
 	}
+
+	[ValueConversion(typeof(bool?), typeof(bool?))]
+	public class BoolToReverseConverter : BaseConv, IValueConverter {
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+			if (value == null)
+				return Binding.DoNothing;
+			if (value is bool b)
+				return !b;
+			return Binding.DoNothing;
+		}
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+			if (value == null)
+				return Binding.DoNothing;
+			if (value is bool b)
+				return !b;
+			return Binding.DoNothing;
+		}
+	}
 }
