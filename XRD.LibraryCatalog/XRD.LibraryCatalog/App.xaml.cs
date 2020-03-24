@@ -92,5 +92,23 @@ namespace XRD.LibCat {
 				return httpClient;
 			}
 		}
+
+		public static TWindow OpenWindow<TWindow>(int? id = null) where TWindow : Controls.EntityBoundWindow {
+			if (Current.Windows.Count > 0) {
+				foreach (var w in Current.Windows) {
+					if (w is TWindow ebw) {
+						if (ebw.EntityId == id) {
+							ebw.Focus();
+							return ebw as TWindow;
+						}
+					}
+				}
+			}
+
+			var wnd = Activator.CreateInstance(typeof(TWindow)) as TWindow;
+			wnd.EntityId = id;
+			wnd.Show();
+			return wnd;
+		}
 	}
 }

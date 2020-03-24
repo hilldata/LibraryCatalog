@@ -42,12 +42,15 @@ namespace XRD.LibCat.Models {
 					_email = null;
 					return;
 				}
-				string temp = value.TrimTo(150);
+				var temp = value.TrimTo(150);
 				if (!temp.IsValidEmail())
-					throw new ArgumentOutOfRangeException(nameof(Email), $"The email provided [{temp}] is not a valid email address.");
+					throw new ArgumentException($"[{temp}] is not a valid email address.");
 				_email = temp;
 			}
 		}
+
+		[Display(Name ="Is Teacher?", ShortName ="Teacher?", Description ="Is this staff member a teacher?")]
+		public bool IsTeacher { get; set; } = false;
 
 		[Display(Name = "Grades Taught", ShortName = "Grades", Description = "The grade levels taught by this staff member.")]
 		public GradeLevels GradesTaught { get; set; }
@@ -72,6 +75,8 @@ namespace XRD.LibCat.Models {
 
 				builder.Property(s => s.Subjects).HasConversion(new ObservableStringCollectionConverter());
 				builder.Property(s => s.Subjects).Metadata.SetValueComparer(new ObservableStringCollectionValueComparer());
+
+				builder.HasIndex(s => s.IsTeacher);
 
 				builder.HasMany(s => s.Students)
 					.WithOne(s => s.Teacher)

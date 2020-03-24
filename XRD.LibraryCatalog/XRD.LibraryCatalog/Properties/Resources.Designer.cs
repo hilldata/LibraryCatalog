@@ -61,11 +61,31 @@ namespace XRD.LibCat.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ContactCard_16x {
+            get {
+                object obj = ResourceManager.GetObject("ContactCard_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://www.googleapis.com/books/v1/volumes?q=.
         /// </summary>
         internal static string GoogleApiUrl {
             get {
                 return ResourceManager.GetString("GoogleApiUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon library {
+            get {
+                object obj = ResourceManager.GetObject("library", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
     }

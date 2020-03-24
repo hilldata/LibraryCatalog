@@ -5,6 +5,7 @@
     xmlns:mod="clr-namespace:XRD.LibCat.Models"
     xmlns:modAbs="clr-namespace:XRD.LibCat.Models.Abstract"
     xmlns:ctrl="clr-namespace:XRD.LibCat.Controls"
+    xmlns:val="clr-namespace:XRD.LibCat.Validation"
     xmlns:local="clr-namespace:XRD.LibCat">
 
     <Style TargetType="TextBlock" x:Key="mdl2">
@@ -18,8 +19,6 @@
     </Style>
 
     <Style TargetType="Button" x:Key="mdl2Button">
-        <Setter Property="FontFamily" Value="Segoe Mdl2 Assets"/>
-        <Setter Property="FontSize" Value="16"/>
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="2"/>
         <Setter Property="ContentTemplate">
@@ -39,8 +38,6 @@
     </Style>
 
     <Style TargetType="ToggleButton" x:Key="mdl2Toggle">
-        <Setter Property="FontFamily" Value="Segoe Mdl2 Assets"/>
-        <Setter Property="FontSize" Value="16"/>
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="2"/>
         <Setter Property="ContentTemplate">
@@ -137,8 +134,8 @@
     </Style>
     
     <Style TargetType="{x:Type ctrl:EntityBoundWindow}">
-        <Setter Property="WindowStyle" Value="ToolWindow"/>
         <Setter Property="ResizeMode" Value="CanResizeWithGrip"/>
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Cycle"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ctrl:EntityBoundWindow}">
@@ -189,7 +186,7 @@
                                     <TextBox Text="{Binding Id, Mode=OneWay}"/>
                                 </StackPanel>
                             </StatusBarItem>
-                            <StatusBarItem ToolTip="{Binding EntityTYpe, RelativeSource={RelativeSource AncestorType={x:Type ctrl:EntityBoundWindow}}, ConverterParameter='The date/time the {0} was created.', Converter={conv:EntityTypeToToolTipConverter}}">
+                            <StatusBarItem ToolTip="{Binding EntityType, RelativeSource={RelativeSource AncestorType={x:Type ctrl:EntityBoundWindow}}, ConverterParameter='The date/time the {0} was created.', Converter={conv:EntityTypeToToolTipConverter}}">
                                 <StackPanel >
                                     <TextBlock Text="Created:"/>
                                     <TextBox Text="{Binding CTime, Mode=OneWay}"/>
@@ -205,7 +202,7 @@
                                            Visibility="{Binding EntityType, Converter={conv:EntityTypeToVisibilityConverter}, ConverterParameter={x:Type modAbs:ModifiableEntity}, RelativeSource={RelativeSource AncestorType={x:Type ctrl:EntityBoundWindow}}}">
                                 <StackPanel>
                                     <TextBlock Text="Saved:"/>
-                                    <TextBox Text="{Binding Ts, Mode=OneWay}"/>
+                                    <TextBox Text="{Binding LastSave, Mode=OneWay}"/>
                                 </StackPanel>
                             </StatusBarItem>
                             <StatusBarItem ToolTip="{Binding EntityType, Converter={conv:EntityTypeToToolTipConverter}, RelativeSource={RelativeSource AncestorType={x:Type ctrl:EntityBoundWindow}}, ConverterParameter='The total number of times the {0} has been edited.'}"
@@ -235,4 +232,72 @@
         </Setter>
     </Style>
 
+    <Style TargetType="TextBox" x:Key="txtBoxInError">
+        <Setter Property="Margin" Value="2"/>
+        <Setter Property="Grid.Column" Value="0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="true">
+                <Setter Property="ToolTip"
+                        Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                    Path=(Validation.Errors)/ErrorContent}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <ControlTemplate x:Key="validationTemplate">
+        <DockPanel>
+            <TextBlock Foreground="Red" FontSize="20" Text="!"/>
+            <AdornedElementPlaceholder/>
+        </DockPanel>
+    </ControlTemplate>
+
+    <Style TargetType="{x:Type ctrl:EmailTextBox}">
+        <Setter Property="Grid.Column" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ctrl:EmailTextBox}">
+                    <Grid>
+                        <Grid.Resources>
+                            <Style TargetType="TextBlock" x:Key="err" BasedOn="{StaticResource mdl2}">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="Grid.Column" Value="1"/>
+                            </Style>
+                        </Grid.Resources>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="PART_txtBox" MaxLength="150" SpellCheck.IsEnabled="False"
+                             Style="{StaticResource txtBoxInError}">
+                            <TextBox.Text>
+                                <Binding Path="Value" RelativeSource="{RelativeSource AncestorType={x:Type ctrl:EmailTextBox}}"
+                                     UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <val:EmailValidationRule IsRequired="False"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock Style="{StaticResource err}" Text="&#xf139;" Foreground="Red" Visibility="{Binding ElementName=PART_txtBox, Path=(Validation.HasError), Converter={conv:BoolToVisibilityConverter}}"/>
+                        <TextBlock Style="{StaticResource err}" Text="&#xf13b;" Foreground="White" Visibility="{Binding ElementName=PART_txtBox, Path=(Validation.HasError), Converter={conv:BoolToVisibilityConverter}}"
+                                   ToolTip="{Binding ElementName=PART_txtBox, Path=(Validation.Errors)/ErrorContent}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type ctrl:EntityExplorer}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ctrl:EntityExplorer}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

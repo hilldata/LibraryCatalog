@@ -56,9 +56,9 @@ namespace XRD.LibCat.Models {
 					_email = null;
 					return;
 				}
-				string temp = value.TrimTo(150);
+				var temp = value.TrimTo(150);
 				if (!temp.IsValidEmail())
-					throw new ArgumentOutOfRangeException(nameof(Email), $"The email provided [{temp}] is not a valid email address.");
+					throw new ArgumentException($"[{temp}] is not a valid email address.");
 				_email = temp;
 			}
 		}

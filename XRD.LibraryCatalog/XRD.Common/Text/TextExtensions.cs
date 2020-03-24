@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Linq;
 
-namespace XRD.LibCat {
-	internal static class TextExtensions {
-		internal static bool HasValue(this string s) => !string.IsNullOrWhiteSpace(s);
+namespace XRD.Text {
+	public static class TextExtensions {
+		public static bool HasValue(this string s) => !string.IsNullOrWhiteSpace(s);
 
-		internal const char ELLIPSIS = (char)8230;
-		internal static bool IsValidEmail(this string text, bool isRequired = false) {
+		public const char ELLIPSIS = (char)8230;
+		public static bool IsValidEmail(this string text, bool isRequired = false) {
 			// First, check for null or whitespace strings. If it's required, return false.
 			if (string.IsNullOrWhiteSpace(text))
 				return !isRequired;
@@ -37,7 +36,7 @@ namespace XRD.LibCat {
 
 			// split out the domain portions and make sure none are empty (two dots in a row) or (nothing after the dot).
 			var split = domain.Split(new char[] { '.' }, StringSplitOptions.None);
-			foreach(var s in split) {
+			foreach (var s in split) {
 				if (string.IsNullOrWhiteSpace(s))
 					return false;
 			}
@@ -50,7 +49,7 @@ namespace XRD.LibCat {
 		/// </summary>
 		/// <param name="s">The word to split</param>
 		/// <returns>String of words with spaces inserted</returns>
-		internal static string SplitCamelCase(this string s) => s.SplitCamelCase(true, DEFAULT_SPACE_CHARS);
+		public static string SplitCamelCase(this string s) => s.SplitCamelCase(true, DEFAULT_SPACE_CHARS);
 		/// <summary>
 		/// "Splits" a camel-cased word by inserting spaces before upper-cased characters. Also replaces specified character with spaces and optionally removes lower-case prefixes from the front of the word.
 		/// </summary>
@@ -58,7 +57,7 @@ namespace XRD.LibCat {
 		/// <param name="removePrefix">Should the lower-case prefix be removed from the front of the word (if exists)?</param>
 		/// <param name="spaceChars">Array of <see cref="char"/>s to be replaced with spaces</param>
 		/// <returns>String of words with spaces inserted</returns>
-		internal static string SplitCamelCase(this string s, bool removePrefix, params char[] spaceChars) {
+		public static string SplitCamelCase(this string s, bool removePrefix, params char[] spaceChars) {
 			if (string.IsNullOrWhiteSpace(s))
 				return string.Empty;
 			string res = s.Trim();
@@ -201,7 +200,7 @@ namespace XRD.LibCat {
 		/// </summary>
 		/// <param name="s">The word to pluralize</param>
 		/// <returns>The word in its plural form</returns>
-		internal static string Pluralize(this string s) {
+		public static string Pluralize(this string s) {
 			if (string.IsNullOrWhiteSpace(s))
 				return string.Empty;
 			s = s.Trim();
@@ -258,7 +257,7 @@ namespace XRD.LibCat {
 		/// <param name="text">The text to truncate</param>
 		/// <param name="maxLen">The maximum length of the result. (default = 250 characters). Less than or equal to ZERO simply trims the string.</param>
 		/// <returns>The truncated string. If any characters were actually truncated, an <see cref="ELLIPSIS"/> char is appended</returns>
-		internal static string Truncate(this string text, int maxLen = 250) {
+		public static string Truncate(this string text, int maxLen = 250) {
 			if (string.IsNullOrWhiteSpace(text))
 				return string.Empty;
 
@@ -278,7 +277,7 @@ namespace XRD.LibCat {
 		/// <param name="text">The text to truncate</param>
 		/// <param name="maxLen">The maximum length of the result. (default = 250 characters). Less than or equal to ZERO simply trims the string.</param>
 		/// <returns>The truncated string.</returns>
-		internal static string TrimTo(this string text, int maxLen = 250) {
+		public static string TrimTo(this string text, int maxLen = 250) {
 			if (string.IsNullOrWhiteSpace(text))
 				return string.Empty;
 
@@ -290,7 +289,7 @@ namespace XRD.LibCat {
 
 
 		// Private method used to find the index of the closest (previous) non-breaking (letter or number) character before the specified maximum length.
-		internal static int IndexOfPreviousNonBreakingChar(this string text, int maxLen) {
+		public static int IndexOfPreviousNonBreakingChar(this string text, int maxLen) {
 			if (string.IsNullOrWhiteSpace(text))
 				return -1;
 			if (text.Length <= maxLen)
@@ -315,27 +314,27 @@ namespace XRD.LibCat {
 		/// <summary>
 		/// Wildcard character for a single matching character.
 		/// </summary>
-		internal const char SINGLE_CHAR_WILDCARD = '?';
+		public const char SINGLE_CHAR_WILDCARD = '?';
 		/// <summary>
 		/// Wildcard character for multiple/no matching characters.
 		/// </summary>
-		internal const char MULTI_CHAR_WILDCARD = '*';
+		public const char MULTI_CHAR_WILDCARD = '*';
 
 		/// <summary>
 		/// Wildcard character for a single matching character (for TSQL LIKE filters)
 		/// </summary>
-		internal const char TSQL_SINGLE_CHAR_WILDCARD = '_';
+		public const char TSQL_SINGLE_CHAR_WILDCARD = '_';
 		/// <summary>
 		/// Wildcard character for multiple/no matching characters (for TSQL LIKE filters)
 		/// </summary>
-		internal const char TSQL_MULTI_CHAR_WILDCARD = '%';
+		public const char TSQL_MULTI_CHAR_WILDCARD = '%';
 
 		/// <summary>
 		/// Convert a string with standard filesystem wildcards to a SQL "like" filter
 		/// </summary>
 		/// <param name="s">The string to convert.</param>
 		/// <returns>The filter string.</returns>
-		internal static string ToSqlLikeFilter(this string s) {
+		public static string ToSqlLikeFilter(this string s) {
 			if (!s.ContainsWildcard())
 				return s.Trim();
 			return s.Replace(SINGLE_CHAR_WILDCARD, TSQL_SINGLE_CHAR_WILDCARD).Replace(MULTI_CHAR_WILDCARD, TSQL_MULTI_CHAR_WILDCARD).Trim();
@@ -346,7 +345,7 @@ namespace XRD.LibCat {
 		/// </summary>
 		/// <param name="s">The string to check</param>
 		/// <returns>Boolean indicating whether or not the string contains wildcards</returns>
-		internal static bool ContainsWildcard(this string s) {
+		public static bool ContainsWildcard(this string s) {
 			if (string.IsNullOrWhiteSpace(s))
 				return false;
 			return s.Contains(MULTI_CHAR_WILDCARD.ToString()) || s.Contains(SINGLE_CHAR_WILDCARD.ToString());
@@ -357,7 +356,7 @@ namespace XRD.LibCat {
 		/// </summary>
 		/// <param name="s">The string to split</param>
 		/// <returns>An array of strings.</returns>
-		internal static string[] SplitOnWildcards(this string s) =>
+		public static string[] SplitOnWildcards(this string s) =>
 			s.Split(new char[] { MULTI_CHAR_WILDCARD, SINGLE_CHAR_WILDCARD }, StringSplitOptions.RemoveEmptyEntries);
 
 		/// <summary>
@@ -367,7 +366,7 @@ namespace XRD.LibCat {
 		/// <param name="wildcardString">String containing the comparison/matching pattern containing wildcards (* or ?)</param>
 		/// <param name="ignoreCase">Boolean indicating whether or not the comparison is case-insensitive (default = ignore character casing)</param>
 		/// <returns>A Boolean indicating whether or not the text matches the comparison string.</returns>
-		internal static bool EqualsWildcard(this string text, string wildcardString, bool ignoreCase = true) {
+		public static bool EqualsWildcard(this string text, string wildcardString, bool ignoreCase = true) {
 			// Return false if either of the strings are null or empty.
 			if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(wildcardString))
 				return false;

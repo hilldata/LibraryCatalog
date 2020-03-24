@@ -1,5 +1,7 @@
 ﻿namespace XRD.LibCat {
 	public class Mdl2Assets {
+		public Mdl2Assets() { }
+
 		public const char GlobalNavigationButton = (char)0xe700;
 		public const char Wifi = (char)0xe701;
 		public const char Bluetooth = (char)0xe702;

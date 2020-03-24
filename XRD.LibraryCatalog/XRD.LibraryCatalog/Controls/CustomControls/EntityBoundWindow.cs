@@ -88,6 +88,25 @@ namespace XRD.LibCat.Controls {
 
 		public IEntity Entity { get; private set; }
 
+		#region WindowIconCharProperty 
+		public static readonly DependencyProperty WindowIconCharProperty = DependencyProperty.Register(
+			"WindowIconChar",
+			typeof(char?),
+			typeof(EntityBoundWindow),
+			new FrameworkPropertyMetadata(null, onWindowIconCharChanged));
+		private static void onWindowIconCharChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+			EntityBoundWindow wind = (EntityBoundWindow)d;
+			if (e.NewValue == null || !(e.NewValue is char c))
+				return;
+			var bmp = DrawingHelper.CreateBitmapSource(DrawingHelper.DrawTextToFixedBitmap(c.ToString()));
+			wind.Icon = BitmapFrame.Create(bmp);
+		}
+		public string WindowIconChar {
+			get => (string)GetValue(WindowIconCharProperty);
+			set => SetValue(WindowIconCharProperty, value);
+		}
+		#endregion
+
 		#region IsAccessingDbProperty
 		public static readonly DependencyProperty IsAccessingDbProperty = DependencyProperty.Register(
 			"IsAccessingDb",

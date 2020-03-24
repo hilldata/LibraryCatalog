@@ -12,6 +12,8 @@
         <Style TargetType="ToolBar">
             <Setter Property="ToolBarTray.IsLocked" Value="True"/>
             <Setter Property="DockPanel.Dock" Value="Top"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue"/>
         </Style>
         
         <Style TargetType="Label">
@@ -172,5 +174,20 @@
             </Border>
         </DataTemplate>
 
+        <Style x:Key="TextBoxInError" TargetType="TextBox" BasedOn="{StaticResource txtBoxBase}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" 
+                            Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                        Path=(Validation.Errors)/ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <ControlTemplate x:Key="ValidationTemplate">
+            <DockPanel>
+                <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
+                <AdornedElementPlaceholder/>
+            </DockPanel>
+        </ControlTemplate>
     </Application.Resources>
 </Application>

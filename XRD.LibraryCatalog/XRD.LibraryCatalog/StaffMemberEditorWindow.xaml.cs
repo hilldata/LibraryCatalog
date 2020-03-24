@@ -47,6 +47,10 @@ namespace XRD.LibCat {
 				editName.SetFocusLast();
 				return false;
 			}
+			if(!(Entity as StaffMember).Email.IsValidEmail()) {
+				txtEmail.Focus();
+				return false;
+			}
 			return true;
 		}
 

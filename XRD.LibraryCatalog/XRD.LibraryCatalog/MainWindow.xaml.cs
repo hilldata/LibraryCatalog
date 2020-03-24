@@ -23,9 +23,7 @@ namespace XRD.LibCat {
 		}
 
 		private void btnReceiveInventory_Click(object sender, RoutedEventArgs e) {
-			/*ReceiveInventoryWindow wnd = new ReceiveInventoryWindow();
-			wnd.Show();*/
-			StaffMemberEditorWindow wnd = new StaffMemberEditorWindow();
+			ReceiveInventoryWindow wnd = new ReceiveInventoryWindow();
 			wnd.Show();
 		}
 	}

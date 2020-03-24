@@ -7,9 +7,10 @@
                         xmlns:ctrl="clr-namespace:XRD.LibCat.Controls"
                         xmlns:mod="clr-namespace:XRD.LibCat.Models"
                         xmlns:conv="clr-namespace:XRD.LibCat.Converters"
+                        WindowIconChar="{x:Static local:Mdl2Assets.Contact}"
                         mc:Ignorable="d" EntityType="{x:Type mod:StaffMember}"
-                        MinHeight="400" MinWidth="700"
-                        Height="400" Width="400">
+                        MinHeight="400" MinWidth="800"
+                        Height="400" Width="800">
     <TabControl>
         <TabItem Name="tbiGeneral">
             <TabItem.Header>
@@ -33,7 +34,7 @@
                     <Label Content="Room:"/>
                     <TextBox Text="{Binding Room}" MaxLength="50"/>
                     <Label Grid.Row="1" Content="Email:"/>
-                    <TextBox Grid.Row="1" Text="{Binding Email}" MaxLength="150"/>
+                    <ctrl:EmailTextBox Grid.Row="1" Value="{Binding Email}" x:Name="txtEmail"/>
                 </Grid>
             </StackPanel>
         </TabItem>
@@ -47,7 +48,6 @@
             </TabItem.Header>
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
